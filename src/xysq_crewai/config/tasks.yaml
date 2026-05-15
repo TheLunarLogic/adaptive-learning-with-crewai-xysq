@@ -1,0 +1,88 @@
+teach_task:
+  description: >
+    Teach the student about: {topic}
+
+    PRIOR LEARNING CONTEXT (from persistent memory):
+    {memory_context}
+
+    INSTRUCTIONS:
+    - If the student has prior weaknesses listed above, focus your lesson there.
+    - If this is a first session (no history), teach foundational concepts.
+    - Reference any uploaded study materials if mentioned in the context.
+    - Keep the lesson to 3–4 focused paragraphs.
+    - Use concrete examples and analogies.
+  expected_output: >
+    A clear, adaptive lesson on {topic} that references the student's
+    known strengths and weaknesses when available.
+  agent: tutor
+
+quiz_task:
+  description: >
+    Generate a 5-question multiple-choice quiz on: {topic}
+
+    PRIOR LEARNING CONTEXT (from persistent memory):
+    {memory_context}
+
+    INSTRUCTIONS:
+    - If the student has known weaknesses, target those with harder questions.
+    - If this is a first session, use standard difficulty.
+    - Each question must have exactly 4 options (A through D).
+    - Output EXACTLY in this format for each question:
+
+    QUESTION: <question text>
+    A) <option>
+    B) <option>
+    C) <option>
+    D) <option>
+    ANSWER: <letter>
+    EXPLANATION: <brief explanation>
+    ---
+
+    Generate exactly 5 questions separated by --- delimiters.
+  expected_output: >
+    5 multiple-choice questions in the specified structured format,
+    adapted to the student's known weak areas.
+  agent: quiz_master
+
+evaluate_task:
+  description: >
+    Evaluate the student's quiz answers on: {topic}
+
+    QUIZ AND STUDENT ANSWERS:
+    {answers_text}
+
+    PRIOR LEARNING CONTEXT:
+    {memory_context}
+
+    INSTRUCTIONS:
+    - Score each answer as correct or incorrect.
+    - Provide a brief explanation for each.
+    - Calculate the total score as X/5.
+    - List specific weak concepts the student should review.
+    - If prior history exists, note whether the student improved or regressed.
+  expected_output: >
+    Detailed evaluation with score (X/5), per-question feedback,
+    and a list of weak concepts identified.
+  agent: quiz_master
+
+report_task:
+  description: >
+    Generate a learning progress report for: {topic}
+
+    EVALUATION RESULTS:
+    {evaluation}
+
+    PRIOR LEARNING CONTEXT:
+    {memory_context}
+
+    INSTRUCTIONS:
+    - Summarize the current session performance.
+    - Compare with previous sessions if history exists.
+    - Identify improvement trends or recurring weaknesses.
+    - Provide 2–3 specific recommendations for next session.
+    - Format as a clean markdown report.
+    - Be encouraging but honest.
+  expected_output: >
+    A markdown-formatted learning progress report with score summary,
+    trend analysis, weak areas, and actionable recommendations.
+  agent: progress_analyst
