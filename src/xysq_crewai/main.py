@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""CLI entry point — run the learning crew from the terminal."""
+"""CLI entry point — run the adaptive learning crew from the terminal."""
 
 import os
 import sys
@@ -26,7 +26,7 @@ def run() -> None:
     if "No prior" in context:
         print("   First session — no prior history.\n")
     else:
-        print(f"   ✓ Found prior learning context.\n")
+        print("   ✓ Found prior learning context.\n")
 
     # Phase 2 — Learn + Quiz
     print(f"📚 Generating adaptive lesson + quiz for '{topic}'...")
@@ -48,8 +48,8 @@ def run() -> None:
     print("\n--- Quiz ---")
     print(quiz_raw[:800])
 
-    # Phase 3 — Simulated assessment
-    answers_text = f"Quiz:\n{quiz_raw}\n\nStudent selected: A, B, C, A, D"
+    # Phase 3 — Assessment
+    answers_text = f"Quiz:\n{quiz_raw}\n\nLearner selected: A, B, C, A, D"
     print("\n📊 Evaluating answers...")
 
     assessment = AssessmentCrew()

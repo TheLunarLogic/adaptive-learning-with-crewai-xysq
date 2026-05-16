@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧠 AI Learning Assistant with Persistent Memory
+# 🧠 Adaptive Learning Companion — Persistent Memory
 
 **The process dies. The learning memory survives.**
 
@@ -19,13 +19,13 @@ cross-session learning memory — built with [CrewAI](https://crewai.com) and [A
 
 ## The Problem
 
-Most AI tutors forget everything when the session ends.
-Context resets. Progress vanishes. The student starts over.
+Most AI systems forget everything when the session ends.
+Context resets. Progress vanishes. The learner starts over.
 
-## This Demo
+## This System
 
-This system persists **learning history** — weak topics, quiz scores, difficulty
-progression, uploaded study materials — across completely separate sessions.
+This project persists **learning history** — understanding gaps, quiz scores,
+difficulty progression, uploaded materials — across completely separate sessions.
 
 Kill the process. Come back tomorrow.
 The AI still knows you struggled with recursion base cases.
@@ -33,12 +33,12 @@ The AI still knows you struggled with recursion base cases.
 ```
 Session 1                    Session 2                    Session 3
 ─────────                    ─────────                    ─────────
-Student scores 2/5           "You struggled with          Score improves to 4/5
+Learner scores 2/5           "You struggled with          Score improves to 4/5
 on recursion (Beginner)       recursion base cases"        (Intermediate)
         │                            │                            │
         ▼                            ▼                            ▼
-Weaknesses + score        Quiz targets base cases        Progress trend
-stored in xysq            with harder questions           stored in xysq
+Gaps + score                 Quiz targets gaps            Progress trend
+stored in xysq              with harder questions         stored in xysq
         │                            │                            │
    ── process killed ──         ── process killed ──       ── process killed ──
 ```
@@ -59,7 +59,7 @@ Agents can restart, redeploy, or crash. Learning memory persists.
 | `memory.capture` | Store structured learning events permanently |
 | `memory.surface` | Fast recall of relevant past context |
 | `memory.synthesize` | Natural-language summaries from memory |
-| `organise.upload_file` | Upload study materials for extraction |
+| `organise.upload_file` | Upload materials for extraction |
 | `organise.wait_for_file` | Wait until document content is indexed |
 
 ---
@@ -72,6 +72,9 @@ Agents can restart, redeploy, or crash. Learning memory persists.
 - 📊 **Progress reports** — markdown summaries with trend analysis and recommendations
 - 🔄 **Cross-session continuity** — memory survives process restarts, redeployments, crashes
 - 📄 **Document memory** — upload PDFs, markdown, or text files; content surfaces in future sessions
+
+Works for developers, researchers, self-learners, professionals — anyone
+learning from documents.
 
 ---
 
@@ -110,9 +113,9 @@ Agents can restart, redeploy, or crash. Learning memory persists.
 
 | Agent | Responsibility |
 |---|---|
-| 🎓 **Tutor** | Teaches topics, adapts depth to difficulty level and known weaknesses |
-| 🧪 **Quiz Master** | Generates structured JSON quizzes, evaluates student answers |
-| 📊 **Progress Analyst** | Tracks score trends, identifies weak areas, suggests difficulty adjustments |
+| 🎓 **Tutor** | Teaches topics, adapts depth to difficulty level and known understanding gaps |
+| 🧪 **Quiz Master** | Generates structured JSON quizzes, evaluates answers |
+| 📊 **Progress Analyst** | Tracks score trends, identifies gaps, suggests difficulty adjustments |
 
 ---
 
@@ -123,17 +126,17 @@ Agents can restart, redeploy, or crash. Learning memory persists.
          │
 2. xysq recalls prior learning history (surface)
          │
-3. Tutor agent teaches — adapts to known weak areas
+3. Tutor agent teaches — adapts to known gaps
          │
 4. Quiz agent generates structured quiz (JSON)
          │
-5. Student answers interactively in the UI
+5. Learner answers interactively in the UI
          │
 6. Score calculated, answers evaluated
          │
 7. Progress agent generates markdown report
          │
-8. Session results + weaknesses stored to xysq (capture)
+8. Session results + gaps stored to xysq (capture)
          │
 9. Future sessions recall this data automatically
 ```
@@ -144,14 +147,17 @@ Agents can restart, redeploy, or crash. Learning memory persists.
 
 The moments that make this feel real:
 
-> *"You struggled with recursion base cases yesterday."*
+> *"You struggled with recursion base cases last session."*
 
 > *"Your recursion score improved from 2/5 to 4/5."*
 
-> *"Based on your uploaded notes, let's focus on memoization."*
+> *"Based on your uploaded notes, today's quiz focuses on memoization."*
 
 These happen because xysq retains structured learning context between
 completely independent process runs — no shared runtime, no database to manage.
+
+The AI remembers what you struggled with previously.
+Your uploaded material becomes part of the adaptive learning experience.
 
 ---
 
@@ -255,22 +261,22 @@ client = Xysq()
 
 # Store a learning event permanently
 client.memory.capture(
-    content="Scored 2/5 on recursion — weak: base cases",
-    tags=["recursion", "weakness"],
+    content="Scored 2/5 on recursion — gap: base cases",
+    tags=["recursion", "gap"],
     significance="high",
     scope="permanent",
 )
 
 # Recall relevant history (fast, no reflection overhead)
-memories = client.memory.surface("recursion progress weaknesses")
+memories = client.memory.surface("recursion progress gaps")
 for m in memories:
     print(m.text)
 
 # Natural-language summary from memory
-result = client.memory.synthesize("How is the student doing in recursion?")
+result = client.memory.synthesize("How is the learner progressing in recursion?")
 print(result.answer)
 
-# Upload study material (auto-surfaced in future recalls)
+# Upload material (auto-surfaced in future recalls)
 file = client.organise.upload_file(
     content=pdf_bytes,
     filename="notes.pdf",
@@ -288,13 +294,13 @@ client.organise.wait_for_file(file.asset_id, timeout=60.0)
 ┌──────────────────┐         ┌──────────┐
 │  Session 1       │──store──│          │
 │  score: 2/5      │         │   xysq   │
-│  weak: base case │         │  Memory  │
+│  gap: base cases │         │  Memory  │
 └──────────────────┘         │  Layer   │
                              │          │
 ┌──────────────────┐         │          │
 │  Session 2       │◄─recall─│          │
-│  targets weak    │         │          │
-│  areas from S1   │──store──│          │
+│  targets gaps    │         │          │
+│  from Session 1  │──store──│          │
 └──────────────────┘         └──────────┘
 
 No shared runtime. No database to manage.
@@ -325,6 +331,6 @@ MIT
 
 Built with [xysq](https://xysq.ai) · [CrewAI](https://crewai.com) · [Amazon Bedrock](https://aws.amazon.com/bedrock/)
 
-**Adaptive learning continuity — powered by persistent memory.**
+**Persistent adaptive learning — powered by memory that survives.**
 
 </div>

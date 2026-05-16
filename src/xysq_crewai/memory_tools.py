@@ -5,7 +5,7 @@ or lists so the rest of the app never touches raw SDK objects.
 
 Design:
   • surface() for all recall — fast, reliable, no heavy reflection
-  • synthesize() only for post-quiz summaries — used sparingly
+  • synthesize() only for post-session summaries — used sparingly
   • All errors resolve to calm fallback messages, never raw tracebacks
 """
 
@@ -83,7 +83,7 @@ def get_learning_context(topic: str) -> str:
     No synthesize() call here — avoids the heavy /reflect endpoint
     that causes timeouts on startup.
     """
-    memories = recall(f"{topic} learning progress weaknesses quiz results")
+    memories = recall(f"{topic} learning progress gaps quiz results")
 
     if not memories:
         return "No prior learning history found."
@@ -99,22 +99,22 @@ _folder_id: str | None = None
 
 
 def _ensure_folder() -> str:
-    """Get or create the student-materials folder (cached after first call)."""
+    """Get or create the learning-materials folder (cached after first call)."""
     global _folder_id
     if _folder_id is not None:
         return _folder_id
 
     client = _client()
     try:
-        folder = client.organise.create_folder("student-materials")
+        folder = client.organise.create_folder("learning-materials")
         _folder_id = folder.id
     except Exception:
         for f in client.organise.list_folders():
-            if getattr(f, "name", None) == "student-materials":
+            if getattr(f, "name", None) in ("learning-materials", "student-materials"):
                 _folder_id = f.id
                 break
     if _folder_id is None:
-        raise RuntimeError("Could not create or find student-materials folder")
+        raise RuntimeError("Could not create or find learning-materials folder")
     return _folder_id
 
 

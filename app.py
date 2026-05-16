@@ -1,4 +1,4 @@
-"""Streamlit UI — AI Learning Assistant with Persistent Memory.
+"""Streamlit UI — Adaptive Learning Companion with Persistent Memory.
 
 Run:  streamlit run app.py
 """
@@ -40,7 +40,11 @@ QUESTION_COUNTS = [3, 5, 10]
 # Page config
 # ---------------------------------------------------------------------------
 
-st.set_page_config(page_title="AI Learning Assistant", page_icon="🧠", layout="wide")
+st.set_page_config(
+    page_title="Adaptive Learning Companion",
+    page_icon="🧠",
+    layout="wide",
+)
 
 st.markdown("""
 <style>
@@ -51,13 +55,13 @@ html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
 /* ── Header ── */
 .app-header {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0d9488 100%);
-    padding: 2rem 2.5rem;
+    padding: 2.2rem 2.5rem;
     border-radius: 16px;
     margin-bottom: 2rem;
     color: white;
 }
-.app-header h1 { margin: 0; font-size: 1.75rem; font-weight: 700; }
-.app-header p  { margin: 0.4rem 0 0; opacity: 0.8; font-size: 0.9rem; }
+.app-header h1 { margin: 0; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
+.app-header p  { margin: 0.5rem 0 0; opacity: 0.8; font-size: 0.9rem; line-height: 1.5; }
 
 /* ── Memory card ── */
 .memory-card {
@@ -282,8 +286,8 @@ def _score_answers(questions: list[dict], answers: dict) -> tuple[int, int]:
 # ---------------------------------------------------------------------------
 
 with st.sidebar:
-    st.markdown("### 🧠 Learning Assistant")
-    st.caption("Persistent memory across sessions")
+    st.markdown("### 🧠 Learning Companion")
+    st.caption("Adaptive memory across sessions")
 
     st.divider()
 
@@ -316,7 +320,7 @@ with st.sidebar:
         st.session_state.phase = "learning"
 
     st.divider()
-    st.markdown("##### 📄 Upload Study Material")
+    st.markdown("##### 📄 Upload Material")
 
     uploaded = st.file_uploader(
         "PDF, TXT, or Markdown",
@@ -352,8 +356,8 @@ with st.sidebar:
 
 st.markdown(
     '<div class="app-header">'
-    "<h1>🧠 AI Learning Assistant</h1>"
-    "<p>Persistent adaptive memory · powered by xysq + CrewAI</p>"
+    "<h1>🧠 Adaptive Learning Companion</h1>"
+    "<p>Upload your own material · Learn through adaptive memory · Continue across sessions</p>"
     "</div>",
     unsafe_allow_html=True,
 )
@@ -485,7 +489,7 @@ elif st.session_state.phase == "evaluating":
         f"Q{i + 1}: {q['question']}\n"
         f"Options: {', '.join(q['options'])}\n"
         f"Correct: {q['correct_answer']}\n"
-        f"Student chose: {answers.get(i, 'No answer')}"
+        f"Learner chose: {answers.get(i, 'No answer')}"
         for i, q in enumerate(questions)
     ]
     answers_text = "\n\n".join(lines)
@@ -519,13 +523,13 @@ elif st.session_state.phase == "evaluating":
         significance="high",
     )
 
-    # Store weak areas separately for targeted future recall
+    # Store understanding gaps separately for targeted future recall
     weak = [q["question"] for i, q in enumerate(questions)
             if not answers.get(i, "").startswith(q["correct_answer"])]
     if weak:
         mem.store(
-            f"Weak areas in {topic} ({difficulty}): {'; '.join(weak)}",
-            tags=[topic.lower().replace(" ", "-"), "weakness"],
+            f"Understanding gaps in {topic} ({difficulty}): {'; '.join(weak)}",
+            tags=[topic.lower().replace(" ", "-"), "gap"],
             significance="high",
         )
 
@@ -553,11 +557,11 @@ elif st.session_state.phase == "results":
     with col_info:
         st.markdown(f"### 📊 {topic}")
         if pct >= 0.8:
-            st.success("🎉 Excellent! Strong understanding demonstrated.")
+            st.success("🎉 Excellent — strong understanding demonstrated.")
         elif pct >= 0.5:
-            st.warning("📈 Good progress. A few areas need review.")
+            st.warning("📈 Solid progress. A few areas need review.")
         else:
-            st.error("💪 Keep going. Focus on the weak areas below.")
+            st.error("💪 Keep going — focus on the gaps highlighted below.")
         st.caption(f"Session {session_count()} · {datetime.now():%B %d, %Y}")
 
     st.divider()
@@ -596,7 +600,7 @@ elif st.session_state.phase == "results":
             f"<b>Topic:</b> {topic}<br>"
             f"<b>Difficulty:</b> {difficulty}<br>"
             f"<b>Score:</b> {score}/{total}<br><br>"
-            "Your next session on this topic will adapt to today's performance."
+            "Your next session on this topic will adapt based on today's results."
             "</div>",
             unsafe_allow_html=True,
         )

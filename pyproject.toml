@@ -1,7 +1,7 @@
 [project]
 name = "xysq_crewai"
 version = "0.1.0"
-description = "AI Learning Assistant with Persistent Memory — xysq + CrewAI demo"
+description = "Adaptive Learning Companion with Persistent Memory — xysq + CrewAI"
 authors = [{ name = "xysq.ai", email = "hello@xysq.ai" }]
 requires-python = ">=3.11,<3.14"
 dependencies = [
@@ -22,10 +22,8 @@ test = "xysq_crewai.main:test"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# --- ADD THESE LINES BELOW ---
 [tool.hatch.metadata]
 allow-direct-references = true
-# ------------------------------
 
 [tool.crewai]
 type = "crew"

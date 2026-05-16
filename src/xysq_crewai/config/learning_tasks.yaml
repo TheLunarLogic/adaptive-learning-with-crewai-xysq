@@ -1,6 +1,6 @@
 teach_task:
   description: >
-    Teach the student about: {topic}
+    Teach the learner about: {topic}
 
     DIFFICULTY LEVEL: {difficulty}
 
@@ -8,10 +8,10 @@ teach_task:
     {memory_context}
 
     INSTRUCTIONS:
-    - If the student has prior weaknesses listed above, focus your lesson there.
+    - If the learner has prior understanding gaps listed above, focus your lesson there.
     - If this is a first session (no history), teach foundational concepts.
     - Adjust depth and complexity based on the difficulty level.
-    - Reference any uploaded study materials if mentioned in the context.
+    - Reference any uploaded materials if mentioned in the context.
     - Keep the lesson to 3–4 focused paragraphs.
     - Use concrete examples and analogies.
     - Do NOT include any quiz questions in your lesson output.
@@ -42,7 +42,7 @@ quiz_task:
 
     RULES:
     - Generate exactly {num_questions} question objects in the array.
-    - Target weak areas from the learning context when available.
+    - Target understanding gaps from the learning context when available.
     - Adjust complexity to match the {difficulty} difficulty level.
     - Every question must have exactly 4 options.
     - correct_answer must be exactly one of: A, B, C, D
