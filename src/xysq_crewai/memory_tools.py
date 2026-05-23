@@ -57,10 +57,33 @@ def store(
         return "⚠ Memory temporarily unavailable — continuing without storing."
 
 
+# Keywords that indicate a memory is study/learning-related
+_STUDY_SIGNALS = (
+    "session", "score", "quiz", "gap", "learn", "study",
+    "topic", "question", "understanding", "lesson",
+    "assessment", "progress", "difficulty", "beginner",
+    "intermediate", "advanced", "correct", "incorrect",
+    "uploaded", "material", "document",
+)
+
+
+def _is_study_related(text: str) -> bool:
+    """Quick heuristic: does this memory look like it came from a study session?"""
+    lower = text.lower()
+    return any(kw in lower for kw in _STUDY_SIGNALS)
+
+
 def recall(query: str, *, budget: str = "low") -> list[str]:
-    """Surface relevant memories as plain strings. Fast and lightweight."""
+    """Surface relevant *learning* memories only. Filters out non-study chat."""
     try:
-        return [m.text for m in _client().memory.surface(query, budget=budget)]
+        memories = _client().memory.surface(
+            query,
+            budget=budget,
+            intent="learning",       # tell xysq we want educational content
+            domain="education",      # scope to the education domain
+        )
+        # Post-filter: drop anything that slipped through and isn't study-related
+        return [m.text for m in memories if _is_study_related(m.text)]
     except Exception:
         return []
 
@@ -82,8 +105,14 @@ def get_learning_context(topic: str) -> str:
 
     No synthesize() call here — avoids the heavy /reflect endpoint
     that causes timeouts on startup.
+
+    The query is tightly scoped to study-session language so xysq
+    prioritises learning memories over casual chat.
     """
-    memories = recall(f"{topic} learning progress gaps quiz results")
+    # Very specific query — anchored to study-session vocabulary
+    memories = recall(
+        f"{topic} study session quiz score learning progress understanding gaps results"
+    )
 
     if not memories:
         return "No prior learning history found."

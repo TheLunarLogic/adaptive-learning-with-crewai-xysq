@@ -161,6 +161,35 @@ section[data-testid="stSidebar"] .stRadio label {
 section[data-testid="stSidebar"] .stFileUploader {
     margin-top: 0.25rem;
 }
+/* Fix duplicate / overlapping text on the file-uploader button.
+   Hide ALL text inside the button, then overlay a single clean
+   label via ::after so there's no ghost/duplicate text. */
+div[data-testid="stFileUploader"] button,
+section[data-testid="stSidebar"] .stFileUploader button {
+    color: transparent !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+div[data-testid="stFileUploader"] button *,
+section[data-testid="stSidebar"] .stFileUploader button * {
+    color: transparent !important;
+}
+div[data-testid="stFileUploader"] button::after,
+section[data-testid="stSidebar"] .stFileUploader button::after {
+    content: "Upload" !important;
+    color: inherit !important;
+    color: rgba(255,255,255,0.9) !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    pointer-events: none !important;
+}
+.stFileUploader > label {
+    margin-bottom: 10px;
+}
 section[data-testid="stSidebar"] .stMarkdown h5,
 section[data-testid="stSidebar"] .stMarkdown strong {
     margin-bottom: 0;
@@ -340,6 +369,10 @@ with st.sidebar:
             st.success(status + (f"\n📌 **{extracted}** added to topics." if is_new else ""))
         else:
             st.warning(status)
+
+        # Rerun so the selectbox re-renders with the newly added topic
+        if is_new:
+            st.rerun()
 
     if st.session_state.uploads:
         st.markdown("**Uploaded:**")

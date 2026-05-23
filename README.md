@@ -1,11 +1,11 @@
 <div align="center">
 
-# 🧠 Adaptive Learning Companion — Persistent Memory
+# 🧠 Adaptive Learning Companion
 
-**The process dies. The learning memory survives.**
+**The AI remembers how you learn.**
 
-A production-ready demo showing how [xysq](https://xysq.ai) gives AI agents persistent,
-cross-session learning memory — built with [CrewAI](https://crewai.com) and [Amazon Bedrock](https://aws.amazon.com/bedrock/).
+Upload your study material. Learn through adaptive quizzes.
+Come back tomorrow — the system still knows where you left off.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![CrewAI](https://img.shields.io/badge/CrewAI-1.14-orange.svg)](https://crewai.com)
@@ -15,68 +15,160 @@ cross-session learning memory — built with [CrewAI](https://crewai.com) and [A
 
 </div>
 
----
+<br>
 
-## The Problem
+## See it in action
 
-Most AI systems forget everything when the session ends.
-Context resets. Progress vanishes. The learner starts over.
+<!-- 🎬 Hero Demo Video Placeholder -->
+<!-- Replace this comment block with an embedded video or GIF showing:
+     1. User uploads "Attention Is All You Need" paper
+     2. New topic appears in the sidebar
+     3. User selects difficulty + question count
+     4. Learning session begins
+-->
 
-## This System
+> **📽️ Demo: Upload → Learn → Remember**
+>
+> _Video coming soon — a 60-second walkthrough showing how uploaded research papers become part of a persistent, adaptive learning workspace._
 
-This project persists **learning history** — understanding gaps, quiz scores,
-difficulty progression, uploaded materials — across completely separate sessions.
+Your uploaded material doesn't disappear after the session.
+It becomes part of every future learning interaction — surfacing in lessons, shaping quizzes, and informing progress reports.
 
-Kill the process. Come back tomorrow.
-The AI still knows you struggled with recursion base cases.
-
-```
-Session 1                    Session 2                    Session 3
-─────────                    ─────────                    ─────────
-Learner scores 2/5           "You struggled with          Score improves to 4/5
-on recursion (Beginner)       recursion base cases"        (Intermediate)
-        │                            │                            │
-        ▼                            ▼                            ▼
-Gaps + score                 Quiz targets gaps            Progress trend
-stored in xysq              with harder questions         stored in xysq
-        │                            │                            │
-   ── process killed ──         ── process killed ──       ── process killed ──
-```
+<br>
 
 ---
 
-## Why xysq?
+<br>
 
-Most AI frameworks only remember the current runtime.
-Once the process exits — the scratchpad disappears,
-context resets, and learning continuity is lost.
+## The problem
 
-**xysq separates memory from the runtime itself.**
-Agents can restart, redeploy, or crash. Learning memory persists.
+Most AI learning tools have amnesia.
 
-| Capability | What it does |
+You upload notes. You answer questions. You close the tab.
+Next time? The AI has no idea you were ever there.
+
+Every session starts from zero.
+
+<br>
+
+## Why continuity matters
+
+Real learning is cumulative.
+
+A tutor who remembers that you struggled with attention mechanisms last week
+will teach differently today. That's the difference between a chatbot and a learning system.
+
+This project gives AI agents **persistent memory** — powered by [xysq](https://xysq.ai).
+
+- Upload a research paper on Monday. The AI still references it on Friday.
+- Score 2/5 on self-attention. Next session targets exactly those gaps.
+- Kill the process. Restart the server. The memory survives.
+
+No database to manage. No conversation logs to replay.
+The AI simply remembers.
+
+<br>
+
+---
+
+<br>
+
+## What it does
+
+| | |
 |---|---|
-| `memory.capture` | Store structured learning events permanently |
-| `memory.surface` | Fast recall of relevant past context |
-| `memory.synthesize` | Natural-language summaries from memory |
-| `organise.upload_file` | Upload materials for extraction |
-| `organise.wait_for_file` | Wait until document content is indexed |
+| 🎯 **Adaptive quizzes** | Difficulty adjusts based on how you've performed before |
+| 📚 **Persistent knowledge** | Uploaded PDFs, notes, and papers become permanent learning material |
+| 🧠 **Cross-session memory** | Quiz scores, weak areas, and understanding gaps survive restarts |
+| 📊 **Progress reports** | Detailed analysis with trend tracking and next-step recommendations |
+| 🔄 **Evolving difficulty** | The system suggests when you're ready to move up |
+| 📄 **Document understanding** | Uploaded content is extracted, indexed, and referenced in future sessions |
+
+<br>
 
 ---
 
-## Features
+<br>
 
-- 🎯 **Adaptive quizzes** — difficulty adjusts based on prior performance
-- 📚 **Persistent topic library** — uploaded documents automatically become selectable topics
-- 🧪 **Structured quiz UI** — interactive multiple-choice with instant answer review
-- 📊 **Progress reports** — markdown summaries with trend analysis and recommendations
-- 🔄 **Cross-session continuity** — memory survives process restarts, redeployments, crashes
-- 📄 **Document memory** — upload PDFs, markdown, or text files; content surfaces in future sessions
+## Adaptive learning in practice
 
-Works for developers, researchers, self-learners, professionals — anyone
-learning from documents.
+<!-- 🎬 Learning + Quiz Flow Demo Video Placeholder -->
+<!-- Replace this comment block with an embedded video or GIF showing:
+     1. Lesson generated from uploaded "Attention Is All You Need" paper
+     2. Dynamic quiz with multiple-choice questions
+     3. User answering questions interactively
+     4. Results screen with score breakdown
+     5. AI-generated evaluation highlighting weak areas
+     6. Improvement suggestions and recommended next steps
+-->
+
+> **📽️ Demo: Learn → Quiz → Evaluate → Adapt**
+>
+> _Video coming soon — a walkthrough of a full learning session showing adaptive quiz generation, interactive answers, and AI-driven performance evaluation with personalized improvement suggestions._
+
+Here's what a typical session looks like:
+
+**1.** You pick a topic — say, the Transformer architecture from a paper you uploaded earlier.
+
+**2.** The AI recalls what you know. If you've studied this before, it remembers where you struggled.
+
+**3.** A lesson is generated — adapted to your level and your gaps.
+
+**4.** You take a quiz. The questions aren't random — they probe the areas where you're weakest.
+
+**5.** After submitting, the AI evaluates every answer. Not just right or wrong — it explains *why*, identifies conceptual gaps, and suggests what to focus on next.
+
+**6.** Everything is stored. Next time you revisit this topic, the system picks up exactly where you left off.
+
+<br>
 
 ---
+
+<br>
+
+## Memory that outlasts the session
+
+<!-- 🎬 xysq Memory Continuity Demo Video Placeholder -->
+<!-- Replace this comment block with an embedded video or GIF showing:
+     1. xysq Organise UI with uploaded files in the vault
+     2. Persistent learning records stored across sessions
+     3. Session outcomes (scores, gaps) saved to memory
+     4. A new session recalling prior learning history
+     5. The "Prior Learning Recalled" card appearing with past context
+-->
+
+> **📽️ Demo: Persistent Memory Across Sessions**
+>
+> _Video coming soon — showing how xysq stores learning history, uploaded materials, and session outcomes in a persistent vault that future sessions draw from automatically._
+
+This is the core of the system.
+
+When you finish a learning session, the AI doesn't just show you a score.
+It stores structured learning data — what you got wrong, which concepts you're improving on, what difficulty you're ready for.
+
+When you come back — hours, days, or weeks later — that data is recalled automatically.
+
+```
+Session 1 (Monday)             Session 2 (Thursday)
+──────────────────             ────────────────────
+Upload: attention paper        AI recalls: "struggled with
+Score: 2/5 on self-attention     multi-head attention"
+Gaps stored → xysq             Quiz targets those exact gaps
+                               Score: 4/5
+                               Progress stored → xysq
+```
+
+No shared runtime between sessions. No conversation replay.
+The memory layer operates independently of the application lifecycle.
+
+**Kill the process. Redeploy. Crash. Come back.**
+The learner profile persists.
+
+<br>
+
+---
+
+<br>
 
 ## Architecture
 
@@ -89,118 +181,34 @@ learning from documents.
         ┌──────────┴────────────┐
         │     CrewAI Agents     │
         │ Tutor · Quiz · Analyst│
-        └──────────┬────────────┘
+        └──────────┬────────────┘  
                    │
     ┌──────────────┼────────────┐
     │              │            │
-┌───┴───┐   ┌─────┴─────┐  ┌───┴─────┐
-│ xysq  │   │  xysq     │  │ Amazon  │
-│Memory │   │ Organise  │  │ Bedrock │
-│capture│   │  upload   │  │nova-lite│
-│surface│   │  extract  │  │         │
-└───────┘   └───────────┘  └─────────┘
+┌───┴───┐   ┌──────┴─────┐  ┌───┴─────┐
+│ xysq  │   │  xysq      │  │ Amazon  │
+│Memory │   │ Organise   │  │ Bedrock │
+│       │   │            │  │         │
+│capture│   │  upload    │  │         │
+│surface│   │  extract   │  │         │
+└───────┘   └────────────┘  └─────────┘
 ```
 
-| Layer | Role |
+Three AI agents collaborate in sequence:
+
+| Agent | Role |
 |---|---|
-| **Memory** | `capture` stores learning events, `surface` recalls past sessions |
-| **Organise** | Uploaded PDFs/notes are extracted and surfaced in future queries |
-| **Bedrock** | `amazon.nova-lite-v1:0` powers all three CrewAI agents |
+| 🎓 **Tutor** | Teaches the topic, adapting depth based on known gaps |
+| 🧪 **Quiz Master** | Generates quizzes that target weak areas, evaluates answers |
+| 📊 **Progress Analyst** | Analyzes trends, writes progress reports, suggests next steps |
+
+Memory and document storage are handled by [xysq](https://xysq.ai) — fully managed, no infrastructure to maintain.
+
+<br>
 
 ---
 
-## Agents
-
-| Agent | Responsibility |
-|---|---|
-| 🎓 **Tutor** | Teaches topics, adapts depth to difficulty level and known understanding gaps |
-| 🧪 **Quiz Master** | Generates structured JSON quizzes, evaluates answers |
-| 📊 **Progress Analyst** | Tracks score trends, identifies gaps, suggests difficulty adjustments |
-
----
-
-## Session Flow
-
-```
-1. Select topic + difficulty + question count
-         │
-2. xysq recalls prior learning history (surface)
-         │
-3. Tutor agent teaches — adapts to known gaps
-         │
-4. Quiz agent generates structured quiz (JSON)
-         │
-5. Learner answers interactively in the UI
-         │
-6. Score calculated, answers evaluated
-         │
-7. Progress agent generates markdown report
-         │
-8. Session results + gaps stored to xysq (capture)
-         │
-9. Future sessions recall this data automatically
-```
-
----
-
-## Adaptive Continuity
-
-The moments that make this feel real:
-
-> *"You struggled with recursion base cases last session."*
-
-> *"Your recursion score improved from 2/5 to 4/5."*
-
-> *"Based on your uploaded notes, today's quiz focuses on memoization."*
-
-These happen because xysq retains structured learning context between
-completely independent process runs — no shared runtime, no database to manage.
-
-The AI remembers what you struggled with previously.
-Your uploaded material becomes part of the adaptive learning experience.
-
----
-
-## Document Memory
-
-Upload PDFs, notes, or markdown files. xysq extracts and indexes the content.
-Uploaded documents automatically appear as topics in the sidebar:
-
-```
-Upload: recursion_notes.pdf
-  → "✓ recursion_notes.pdf added to persistent learning memory"
-  → "📌 Recursion Notes added to your topic library"
-
-Next session → topic "Recursion Notes" available in dropdown
-             → AI references uploaded content in lesson and quiz
-```
-
----
-
-## Project Structure
-
-```
-xysq_crewai/
-├── app.py                              # Streamlit UI (all phases)
-├── .env.example                        # Required API keys template
-├── pyproject.toml                      # Dependencies & scripts
-├── data/
-│   └── topics.json                     # Persistent topic registry
-├── knowledge/
-│   └── user_preference.txt             # CrewAI knowledge source
-├── reports/                            # Generated session reports (gitignored)
-└── src/xysq_crewai/
-    ├── crew.py                         # LearningCrew + AssessmentCrew definitions
-    ├── main.py                         # CLI entry point
-    ├── memory_tools.py                 # xysq integration (all SDK calls)
-    ├── topics.py                       # Persistent topic registry logic
-    └── config/
-        ├── agents.yaml                 # Agent personas and backstories
-        ├── learning_tasks.yaml         # Teach + quiz generation tasks
-        └── assessment_tasks.yaml       # Evaluate + progress report tasks
-```
-
----
+<br>
 
 ## Quickstart
 
@@ -209,9 +217,9 @@ xysq_crewai/
 - Python 3.11+
 - [uv](https://docs.astral.sh/uv/) package manager
 - [xysq API key](https://app.xysq.ai/connect)
-- AWS credentials with Bedrock access (`amazon.nova-lite-v1:0`)
+- AWS credentials with Bedrock access
 
-### 1. Clone & Install
+### Setup
 
 ```bash
 git clone https://github.com/<your-org>/xysq_crewai.git
@@ -219,13 +227,9 @@ cd xysq_crewai
 crewai install
 ```
 
-### 2. Configure Environment
-
 ```bash
 cp .env.example .env
 ```
-
-Fill in the required keys:
 
 | Variable | Source |
 |---|---|
@@ -234,103 +238,54 @@ Fill in the required keys:
 | `AWS_SECRET_ACCESS_KEY` | AWS IAM console |
 | `AWS_DEFAULT_REGION` | e.g. `us-east-1` |
 
-### 3. Run
+### Run
 
 ```bash
 uv run streamlit run app.py
 ```
 
-The app opens at `http://localhost:8501`.
+Opens at `http://localhost:8501`.
 
-### 4. CLI mode (optional)
-
-```bash
-uv run xysq_crewai
-```
+<br>
 
 ---
 
-## xysq SDK Usage
+<br>
 
-All SDK calls are isolated in [`memory_tools.py`](src/xysq_crewai/memory_tools.py):
-
-```python
-from xysq import Xysq
-
-client = Xysq()
-
-# Store a learning event permanently
-client.memory.capture(
-    content="Scored 2/5 on recursion — gap: base cases",
-    tags=["recursion", "gap"],
-    significance="high",
-    scope="permanent",
-)
-
-# Recall relevant history (fast, no reflection overhead)
-memories = client.memory.surface("recursion progress gaps")
-for m in memories:
-    print(m.text)
-
-# Natural-language summary from memory
-result = client.memory.synthesize("How is the learner progressing in recursion?")
-print(result.answer)
-
-# Upload material (auto-surfaced in future recalls)
-file = client.organise.upload_file(
-    content=pdf_bytes,
-    filename="notes.pdf",
-    mime_type="application/pdf",
-    folder_id=folder_id,
-)
-client.organise.wait_for_file(file.asset_id, timeout=60.0)
-```
-
----
-
-## How Memory Persistence Works
-
-```
-┌──────────────────┐         ┌──────────┐
-│  Session 1       │──store──│          │
-│  score: 2/5      │         │   xysq   │
-│  gap: base cases │         │  Memory  │
-└──────────────────┘         │  Layer   │
-                             │          │
-┌──────────────────┐         │          │
-│  Session 2       │◄─recall─│          │
-│  targets gaps    │         │          │
-│  from Session 1  │──store──│          │
-└──────────────────┘         └──────────┘
-
-No shared runtime. No database to manage.
-xysq handles persistence, relevance ranking, and recall.
-```
-
----
-
-## Tech Stack
+## Tech stack
 
 | Component | Technology |
 |---|---|
 | **Memory** | [xysq](https://xysq.ai) — persistent agent memory |
-| **Agents** | [CrewAI](https://crewai.com) 1.14 — role-based multi-agent framework |
-| **LLM** | [Amazon Bedrock](https://aws.amazon.com/bedrock/) — `nova-lite-v1:0` |
+| **Agents** | [CrewAI](https://crewai.com) — role-based multi-agent orchestration |
+| **LLM** | [Amazon Bedrock](https://aws.amazon.com/bedrock/) — Nova Lite |
 | **UI** | [Streamlit](https://streamlit.io/) — interactive web interface |
-| **Package Manager** | [uv](https://docs.astral.sh/uv/) — fast Python tooling |
+| **Tooling** | [uv](https://docs.astral.sh/uv/) — fast Python package management |
+
+<br>
 
 ---
+
+<br>
 
 ## License
 
 MIT
 
+<br>
+
 ---
 
 <div align="center">
 
+<br>
+
 Built with [xysq](https://xysq.ai) · [CrewAI](https://crewai.com) · [Amazon Bedrock](https://aws.amazon.com/bedrock/)
 
-**Persistent adaptive learning — powered by memory that survives.**
+<br>
+
+**The session ends. The learning never does.**
+
+<br>
 
 </div>
