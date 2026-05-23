@@ -20,16 +20,17 @@ Come back tomorrow — the system still knows where you left off.
 ## See it in action
 
 <!-- 🎬 Hero Demo Video Placeholder -->
-<!-- Replace this comment block with an embedded video or GIF showing:
-     1. User uploads "Attention Is All You Need" paper
-     2. New topic appears in the sidebar
-     3. User selects difficulty + question count
-     4. Learning session begins
+<!-- Replace this image with a high-quality GIF showing:
+     1. Uploading "Attention Is All You Need" paper
+     2. Selecting topic, difficulty, and question count
+     3. The learning session starting seamlessly
 -->
+<div align="center">
+  <img src="assets/learning_material_quiz.gif" alt="Demo: Upload to Learn Flow" width="100%" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p><em>A 60-second walkthrough showing how uploaded research papers become part of a persistent, adaptive learning workspace.</em></p>
+</div>
 
-> **📽️ Demo: Upload → Learn → Remember**
->
-> _Video coming soon — a 60-second walkthrough showing how uploaded research papers become part of a persistent, adaptive learning workspace._
+<br>
 
 Your uploaded material doesn't disappear after the session.
 It becomes part of every future learning interaction — surfacing in lessons, shaping quizzes, and informing progress reports.
@@ -93,18 +94,15 @@ The AI simply remembers.
 ## Adaptive learning in practice
 
 <!-- 🎬 Learning + Quiz Flow Demo Video Placeholder -->
-<!-- Replace this comment block with an embedded video or GIF showing:
-     1. Lesson generated from uploaded "Attention Is All You Need" paper
-     2. Dynamic quiz with multiple-choice questions
-     3. User answering questions interactively
-     4. Results screen with score breakdown
-     5. AI-generated evaluation highlighting weak areas
-     6. Improvement suggestions and recommended next steps
+<!-- Replace this image with a high-quality GIF showing:
+     1. Lesson generation and adaptive quiz taking
+     2. Real-time feedback and evaluation
+     3. Improvement suggestions
 -->
-
-> **📽️ Demo: Learn → Quiz → Evaluate → Adapt**
->
-> _Video coming soon — a walkthrough of a full learning session showing adaptive quiz generation, interactive answers, and AI-driven performance evaluation with personalized improvement suggestions._
+<div align="center">
+  <img src="assets/final_result.gif" alt="Demo: Adaptive Quiz Flow" width="100%" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p><em>A walkthrough of a full learning session showing adaptive quiz generation, interactive answers, and AI-driven performance evaluation.</em></p>
+</div>
 
 Here's what a typical session looks like:
 
@@ -129,17 +127,15 @@ Here's what a typical session looks like:
 ## Memory that outlasts the session
 
 <!-- 🎬 xysq Memory Continuity Demo Video Placeholder -->
-<!-- Replace this comment block with an embedded video or GIF showing:
-     1. xysq Organise UI with uploaded files in the vault
-     2. Persistent learning records stored across sessions
-     3. Session outcomes (scores, gaps) saved to memory
-     4. A new session recalling prior learning history
-     5. The "Prior Learning Recalled" card appearing with past context
+<!-- Replace this image with a high-quality GIF showing:
+     1. xysq vault storing the session outcome
+     2. Starting a NEW session later
+     3. The "Prior Learning Recalled" card appearing automatically
 -->
-
-> **📽️ Demo: Persistent Memory Across Sessions**
->
-> _Video coming soon — showing how xysq stores learning history, uploaded materials, and session outcomes in a persistent vault that future sessions draw from automatically._
+<div align="center">
+  <img src="assets/xysq_vault_demo.gif" alt="Demo: Persistent Memory" width="100%" style="border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p><em>Showing how xysq stores learning history and session outcomes in a persistent vault that future sessions draw from automatically.</em></p>
+</div>
 
 This is the core of the system.
 

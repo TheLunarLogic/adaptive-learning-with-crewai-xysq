@@ -54,56 +54,61 @@ html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
 
 /* ── Header ── */
 .app-header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0d9488 100%);
-    padding: 2.2rem 2.5rem;
-    border-radius: 16px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
     margin-bottom: 2rem;
     color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-.app-header h1 { margin: 0; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
-.app-header p  { margin: 0.5rem 0 0; opacity: 0.8; font-size: 0.9rem; line-height: 1.5; }
+.app-header h1 { margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+.app-header p  { margin: 0.5rem 0 0; opacity: 0.85; font-size: 1rem; line-height: 1.5; font-weight: 400; }
 
-/* ── Memory card ── */
+/* ── Memory card (The core "Prior Learning Recalled" moment) ── */
 .memory-card {
-    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-    padding: 1.2rem 1.6rem;
-    border-radius: 12px;
-    color: white;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-left: 4px solid #0d9488;
+    padding: 1.25rem 1.75rem;
+    border-radius: 8px;
+    color: #0f172a;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
     line-height: 1.6;
+    box-shadow: 0 2px 4px rgba(13, 148, 136, 0.05);
 }
 .memory-card strong {
     display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    opacity: 0.9;
-    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0f766e;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 
 /* ── Question card ── */
 .question-card {
-    background: #f8fafc;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1.4rem 1.6rem;
-    margin-bottom: 1.4rem;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 .question-num {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #0d9488;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
 }
 .question-text {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 500;
     color: #0f172a;
-    line-height: 1.55;
+    line-height: 1.6;
     margin: 0;
 }
 
@@ -113,42 +118,50 @@ html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
 
 /* ── Score display ── */
 .score-display {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 700;
-    color: #0d9488;
+    color: #0f172a;
     text-align: center;
     line-height: 1;
-    padding: 0.8rem 0 0.4rem;
+    padding: 1rem 0 0.5rem;
+    letter-spacing: -0.02em;
 }
 .score-label {
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     color: #64748b;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* ── Memory update card ── */
 .update-card {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 12px;
-    padding: 1.4rem;
-    font-size: 0.9rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 0.95rem;
     line-height: 1.6;
-    color: #166534;
+    color: #334155;
 }
-.update-card strong { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+.update-card strong { 
+    display: block; 
+    margin-bottom: 0.75rem; 
+    font-weight: 600; 
+    color: #0f172a;
+}
 
 /* ── Topic badge ── */
 .topic-badge {
     display: inline-block;
-    background: #e0f2fe;
-    color: #0369a1;
-    font-size: 0.8rem;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.85rem;
     font-weight: 500;
-    padding: 0.25rem 0.75rem;
+    padding: 0.35rem 0.85rem;
     border-radius: 20px;
-    margin: 0.2rem;
+    margin: 0.25rem;
+    border: 1px solid #e2e8f0;
 }
 
 /* ── Sidebar tweaks ── */
@@ -389,22 +402,23 @@ with st.sidebar:
 
 st.markdown(
     '<div class="app-header">'
-    "<h1>🧠 Adaptive Learning Companion</h1>"
-    "<p>Upload your own material · Learn through adaptive memory · Continue across sessions</p>"
+    "<h1>🧠 Adaptive Learning System</h1>"
+    "<p>Upload your knowledge · Learn interactively · Persist memory across sessions</p>"
     "</div>",
     unsafe_allow_html=True,
 )
 
 # ── Phase: Select ──────────────────────────────────────────────────────────
 if st.session_state.phase == "select":
-    st.info("👈 Choose a topic, set your difficulty, and press **Start Session** to begin.")
+    st.markdown("### Ready to learn.")
+    st.caption("Select a topic from the sidebar, adjust your difficulty, and begin your session.")
 
     custom = [t for t in load_topics() if t not in [
         "Recursion", "Sorting Algorithms", "Binary Trees",
         "Graph Traversal", "Dynamic Programming",
     ]]
     if custom:
-        st.markdown("**Your uploaded topics:**")
+        st.markdown("<br>**Your uploaded knowledge:**", unsafe_allow_html=True)
         badges = " ".join(f'<span class="topic-badge">{t}</span>' for t in custom)
         st.markdown(badges, unsafe_allow_html=True)
 
@@ -422,6 +436,14 @@ elif st.session_state.phase == "learning":
     if "No prior" not in context:
         st.markdown(
             f'<div class="memory-card"><strong>🧠 Prior Learning Recalled</strong>{context}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            '<div class="memory-card" style="border-left-color: #cbd5e1; background: #f8fafc; border-color: #e2e8f0;">'
+            '<strong>🆕 First Session</strong>'
+            'No prior learning history found for this topic. Let\'s establish a baseline.'
+            '</div>',
             unsafe_allow_html=True,
         )
 
@@ -448,7 +470,6 @@ elif st.session_state.phase == "learning":
     st.session_state.questions = questions
     st.session_state.answers = {}
     st.session_state.phase = "quiz" if questions else "quiz_failed"
-    st.session_state._quiz_raw_debug = quiz_raw  # preserved for diagnostics only
     st.rerun()
 
 
@@ -462,6 +483,14 @@ elif st.session_state.phase == "quiz":
     if "No prior" not in context:
         st.markdown(
             f'<div class="memory-card"><strong>🧠 Prior Learning Recalled</strong>{context}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            '<div class="memory-card" style="border-left-color: #cbd5e1; background: #f8fafc; border-color: #e2e8f0;">'
+            '<strong>🆕 First Session</strong>'
+            'No prior learning history found for this topic. Let\'s establish a baseline.'
+            '</div>',
             unsafe_allow_html=True,
         )
 
