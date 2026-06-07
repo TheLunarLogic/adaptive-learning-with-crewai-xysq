@@ -5,7 +5,7 @@ Two crews with separate task configs to avoid agent resolution conflicts:
   • AssessmentCrew — quiz master evaluates + progress analyst reports
 """
 
-from crewai import Agent, Crew, Process, Task
+from crewai import Agent, Crew, Process, Task, LLM
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 
@@ -19,14 +19,40 @@ class LearningCrew:
 
     agents: list[BaseAgent]
     tasks: list[Task]
+    credentials: dict | None = None
+
+    def __init__(self, credentials: dict):
+        self.credentials = credentials
+
+    def _get_llm(self) -> LLM:
+        if not self.credentials:
+            raise ValueError("Credentials not provided to LearningCrew")
+        
+        provider = self.credentials.get("PROVIDER", "")
+        model = self.credentials.get("MODEL", "")
+        
+        if provider == "AWS Bedrock":
+            return LLM(
+                model=model,
+                aws_access_key_id=self.credentials.get("AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=self.credentials.get("AWS_SECRET_ACCESS_KEY"),
+                aws_region_name=self.credentials.get("AWS_DEFAULT_REGION")
+            )
+        elif provider == "Google Gemini" or provider == "OpenAI":
+            return LLM(
+                model=model,
+                api_key=self.credentials.get("API_KEY")
+            )
+        else:
+            raise ValueError(f"Unknown provider: {provider}")
 
     @agent
     def tutor(self) -> Agent:
-        return Agent(config=self.agents_config["tutor"], verbose=False)  # type: ignore[index]
+        return Agent(config=self.agents_config["tutor"], llm=self._get_llm(), verbose=False)  # type: ignore[index]
 
     @agent
     def quiz_master(self) -> Agent:
-        return Agent(config=self.agents_config["quiz_master"], verbose=False)  # type: ignore[index]
+        return Agent(config=self.agents_config["quiz_master"], llm=self._get_llm(), verbose=False)  # type: ignore[index]
 
     @task
     def teach_task(self) -> Task:
@@ -55,14 +81,40 @@ class AssessmentCrew:
 
     agents: list[BaseAgent]
     tasks: list[Task]
+    credentials: dict | None = None
+
+    def __init__(self, credentials: dict):
+        self.credentials = credentials
+
+    def _get_llm(self) -> LLM:
+        if not self.credentials:
+            raise ValueError("Credentials not provided to AssessmentCrew")
+        
+        provider = self.credentials.get("PROVIDER", "")
+        model = self.credentials.get("MODEL", "")
+        
+        if provider == "AWS Bedrock":
+            return LLM(
+                model=model,
+                aws_access_key_id=self.credentials.get("AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=self.credentials.get("AWS_SECRET_ACCESS_KEY"),
+                aws_region_name=self.credentials.get("AWS_DEFAULT_REGION")
+            )
+        elif provider == "Google Gemini" or provider == "OpenAI":
+            return LLM(
+                model=model,
+                api_key=self.credentials.get("API_KEY")
+            )
+        else:
+            raise ValueError(f"Unknown provider: {provider}")
 
     @agent
     def quiz_master(self) -> Agent:
-        return Agent(config=self.agents_config["quiz_master"], verbose=False)  # type: ignore[index]
+        return Agent(config=self.agents_config["quiz_master"], llm=self._get_llm(), verbose=False)  # type: ignore[index]
 
     @agent
     def progress_analyst(self) -> Agent:
-        return Agent(config=self.agents_config["progress_analyst"], verbose=False)  # type: ignore[index]
+        return Agent(config=self.agents_config["progress_analyst"], llm=self._get_llm(), verbose=False)  # type: ignore[index]
 
     @task
     def evaluate_task(self) -> Task:

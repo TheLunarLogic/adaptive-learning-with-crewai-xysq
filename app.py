@@ -221,11 +221,11 @@ section[data-testid="stSidebar"] .stMarkdown strong {
 # ---------------------------------------------------------------------------
 
 def check_credentials() -> bool:
-    has_xysq = bool(os.environ.get("XYSQ_API_KEY", "").strip())
-    has_aws = all(bool(os.environ.get(k, "").strip()) for k in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"])
-    has_gemini = bool(os.environ.get("GEMINI_API_KEY", "").strip()) or bool(os.environ.get("GOOGLE_API_KEY", "").strip())
-    has_openai = bool(os.environ.get("OPENAI_API_KEY", "").strip())
-    return has_xysq and (has_aws or has_gemini or has_openai)
+    creds = st.session_state.get("credentials")
+    if not creds:
+        return False
+    has_xysq = bool(creds.get("XYSQ_API_KEY", "").strip())
+    return has_xysq
 
 _DEFAULTS: dict = dict(
     phase="select",
@@ -241,10 +241,15 @@ _DEFAULTS: dict = dict(
     evaluation="",
     report="",
     uploads=[],
-    show_settings=not check_credentials(),
+    credentials=None,
+    show_settings=True,
 )
 for _k, _v in _DEFAULTS.items():
     st.session_state.setdefault(_k, _v)
+
+# Check settings visibility properly after init
+if "show_settings" not in st.session_state or st.session_state.show_settings:
+    st.session_state.show_settings = not check_credentials()
 
 
 # ---------------------------------------------------------------------------
@@ -344,44 +349,7 @@ def parse_env_content(content: str) -> dict:
             env_dict[k.strip()] = v.strip()
     return env_dict
 
-def update_env_file(updates: dict) -> None:
-    env_path = Path(__file__).parent / ".env"
-    lines = []
-    if env_path.exists():
-        try:
-            with open(env_path, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-        except Exception:
-            pass
-
-    new_lines = []
-    updated_keys = set()
-    for line in lines:
-        stripped = line.strip()
-        if stripped and not stripped.startswith("#") and "=" in stripped:
-            k, _ = stripped.split("=", 1)
-            k = k.strip()
-            if k in updates:
-                new_lines.append(f"{k}={updates[k]}\n")
-                updated_keys.add(k)
-            else:
-                new_lines.append(line)
-        else:
-            new_lines.append(line)
-    
-    for k, v in updates.items():
-        if k not in updated_keys:
-            new_lines.append(f"{k}={v}\n")
-
-    try:
-        with open(env_path, "w", encoding="utf-8") as f:
-            f.writelines(new_lines)
-    except Exception as e:
-        st.error(f"Failed to save credentials: {e}")
-        return
-
-    for k, v in updates.items():
-        os.environ[k] = v
+# (update_env_file has been completely removed to enforce session isolation)
 
 def render_setup_page():
     st.markdown(
@@ -440,16 +408,17 @@ def render_setup_page():
                         st.error("Please fill in GEMINI_API_KEY, XYSQ key, and MODEL.")
                         is_valid = False
                     else:
-                        updates.update({"GEMINI_API_KEY": gemini_key, "GOOGLE_API_KEY": gemini_key})
+                        updates.update({"API_KEY": gemini_key})
                 elif provider == "OpenAI":
                     if not all([xysq_key, openai_key, model]):
                         st.error("Please fill in OPENAI_API_KEY, XYSQ key, and MODEL.")
                         is_valid = False
                     else:
-                        updates.update({"OPENAI_API_KEY": openai_key})
+                        updates.update({"API_KEY": openai_key})
                 
                 if is_valid:
-                    update_env_file(updates)
+                    updates["PROVIDER"] = provider
+                    st.session_state.credentials = updates
                     st.session_state.show_settings = False
                     st.rerun()
 
@@ -509,16 +478,17 @@ def render_setup_page():
                                     st.error("Please fill in all required fields.")
                                     is_valid = False
                                 else:
-                                    updates.update({"GEMINI_API_KEY": up_gemini_key, "GOOGLE_API_KEY": up_gemini_key})
+                                    updates.update({"API_KEY": up_gemini_key})
                             elif up_provider == "OpenAI":
                                 if not all([up_xysq, up_openai_key, up_model]):
                                     st.error("Please fill in all required fields.")
                                     is_valid = False
                                 else:
-                                    updates.update({"OPENAI_API_KEY": up_openai_key})
+                                    updates.update({"API_KEY": up_openai_key})
                                     
                             if is_valid:
-                                update_env_file(updates)
+                                updates["PROVIDER"] = up_provider
+                                st.session_state.credentials = updates
                                 st.session_state.show_settings = False
                                 st.rerun()
                 else:
@@ -546,6 +516,13 @@ if st.session_state.get("show_settings", False):
             "**OpenAI**\n\n"
             "[OpenAI Platform](https://platform.openai.com/api-keys)"
         )
+        
+        st.divider()
+        if st.button("🗑️ Clear Credentials", use_container_width=True):
+            st.session_state.credentials = None
+            st.session_state.show_settings = True
+            st.rerun()
+
     render_setup_page()
     st.stop()
 
@@ -599,7 +576,7 @@ with st.sidebar:
         ext = uploaded.name.rsplit(".", 1)[-1].lower()
         mime = MIME_MAP.get(ext, "application/octet-stream")
         with st.spinner(f"Uploading {uploaded.name}…"):
-            status = mem.upload_document(uploaded.getvalue(), uploaded.name, mime)
+            status = mem.upload_document(st.session_state.credentials, uploaded.getvalue(), uploaded.name, mime)
         st.session_state.uploads.append(uploaded.name)
 
         extracted = extract_topic_from_filename(uploaded.name)
@@ -662,7 +639,7 @@ elif st.session_state.phase == "learning":
     num_questions = st.session_state.num_questions
 
     with st.spinner("🧠 Recalling your learning history…"):
-        context = mem.get_learning_context(topic)
+        context = mem.get_learning_context(st.session_state.credentials, topic)
         st.session_state.memory_context = context
 
     if "No prior" not in context:
@@ -680,7 +657,10 @@ elif st.session_state.phase == "learning":
         )
 
     with st.spinner(f"📚 Building {difficulty.lower()} lesson on **{topic}** ({num_questions} questions)…"):
-        learning = LearningCrew()
+        if not check_credentials():
+            st.warning("⚠️ Please configure your API credentials before starting a session.")
+            st.stop()
+        learning = LearningCrew(credentials=st.session_state.credentials)
         crew_instance = learning.crew()
         result = crew_instance.kickoff(inputs={
             "topic": topic,
@@ -789,7 +769,7 @@ elif st.session_state.phase == "evaluating":
     answers_text = "\n\n".join(lines)
 
     with st.spinner("📊 Evaluating answers and generating progress report…"):
-        assessment = AssessmentCrew()
+        assessment = AssessmentCrew(credentials=st.session_state.credentials)
         crew_instance = assessment.crew()
         report_result = crew_instance.kickoff(inputs={
             "topic": topic,
@@ -812,6 +792,7 @@ elif st.session_state.phase == "evaluating":
 
     # Persist session to xysq
     mem.store(
+        st.session_state.credentials,
         f"Session on {topic} ({difficulty}, {total}q): scored {score}/{total}. {evaluation[:300]}",
         tags=[topic.lower().replace(" ", "-"), "session", difficulty.lower()],
         significance="high",
@@ -822,6 +803,7 @@ elif st.session_state.phase == "evaluating":
             if not answers.get(i, "").startswith(q["correct_answer"])]
     if weak:
         mem.store(
+            st.session_state.credentials,
             f"Understanding gaps in {topic} ({difficulty}): {'; '.join(weak)}",
             tags=[topic.lower().replace(" ", "-"), "gap"],
             significance="high",

@@ -14,10 +14,7 @@ from __future__ import annotations
 import logging
 from functools import lru_cache
 
-from dotenv import load_dotenv
 from xysq import Xysq
-
-load_dotenv()
 
 # Suppress noisy SDK / HTTP logs from surfacing in Streamlit
 logging.getLogger("xysq").setLevel(logging.WARNING)
@@ -29,9 +26,10 @@ logging.getLogger("httpcore").setLevel(logging.WARNING)
 # Client
 # ---------------------------------------------------------------------------
 
-@lru_cache(maxsize=1)
-def _client() -> Xysq:
-    return Xysq()
+@lru_cache(maxsize=32)
+def _client(api_key: str) -> Xysq:
+    """Return a cached xysq client per API key."""
+    return Xysq(api_key=api_key)
 
 
 # ---------------------------------------------------------------------------
@@ -39,6 +37,7 @@ def _client() -> Xysq:
 # ---------------------------------------------------------------------------
 
 def store(
+    credentials: dict,
     content: str,
     *,
     tags: list[str] | None = None,
@@ -46,7 +45,7 @@ def store(
 ) -> str:
     """Capture a learning memory permanently."""
     try:
-        _client().memory.capture(
+        _client(credentials["XYSQ_API_KEY"]).memory.capture(
             content=content,
             tags=tags or [],
             significance=significance,
@@ -73,10 +72,10 @@ def _is_study_related(text: str) -> bool:
     return any(kw in lower for kw in _STUDY_SIGNALS)
 
 
-def recall(query: str, *, budget: str = "low") -> list[str]:
+def recall(credentials: dict, query: str, *, budget: str = "low") -> list[str]:
     """Surface relevant *learning* memories only. Filters out non-study chat."""
     try:
-        memories = _client().memory.surface(
+        memories = _client(credentials["XYSQ_API_KEY"]).memory.surface(
             query,
             budget=budget,
             intent="learning",       # tell xysq we want educational content
@@ -88,19 +87,19 @@ def recall(query: str, *, budget: str = "low") -> list[str]:
         return []
 
 
-def synthesize(query: str) -> str:
+def synthesize(credentials: dict, query: str) -> str:
     """Ask a natural-language question answered from memory.
 
     Use sparingly — only for progress summaries, not for startup recall.
     """
     try:
-        result = _client().memory.synthesize(query, budget="low")
+        result = _client(credentials["XYSQ_API_KEY"]).memory.synthesize(query, budget="low")
         return result.answer or ""
     except Exception:
         return ""
 
 
-def get_learning_context(topic: str) -> str:
+def get_learning_context(credentials: dict, topic: str) -> str:
     """Build learning context for *topic* using surface() only.
 
     No synthesize() call here — avoids the heavy /reflect endpoint
@@ -111,6 +110,7 @@ def get_learning_context(topic: str) -> str:
     """
     # Very specific query — anchored to study-session vocabulary
     memories = recall(
+        credentials,
         f"{topic} study session quiz score learning progress understanding gaps results"
     )
 
@@ -124,34 +124,24 @@ def get_learning_context(topic: str) -> str:
 # Document uploads (xysq Organise)
 # ---------------------------------------------------------------------------
 
-_folder_id: str | None = None
-
-
-def _ensure_folder() -> str:
-    """Get or create the learning-materials folder (cached after first call)."""
-    global _folder_id
-    if _folder_id is not None:
-        return _folder_id
-
-    client = _client()
+def _ensure_folder(client: Xysq) -> str:
+    """Get or create the learning-materials folder."""
     try:
         folder = client.organise.create_folder("learning-materials")
-        _folder_id = folder.id
+        return folder.id
     except Exception:
         for f in client.organise.list_folders():
             if getattr(f, "name", None) in ("learning-materials", "student-materials"):
-                _folder_id = f.id
-                break
-    if _folder_id is None:
-        raise RuntimeError("Could not create or find learning-materials folder")
-    return _folder_id
+                return f.id
+    
+    raise RuntimeError("Could not create or find learning-materials folder")
 
 
-def upload_document(content: bytes, filename: str, mime_type: str) -> str:
+def upload_document(credentials: dict, content: bytes, filename: str, mime_type: str) -> str:
     """Upload a document to xysq Organise and wait for extraction."""
     try:
-        client = _client()
-        folder_id = _ensure_folder()
+        client = _client(credentials["XYSQ_API_KEY"])
+        folder_id = _ensure_folder(client)
 
         file = client.organise.upload_file(
             content=content,
