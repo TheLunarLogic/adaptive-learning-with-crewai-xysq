@@ -5,7 +5,11 @@ Two crews with separate task configs to avoid agent resolution conflicts:
   • AssessmentCrew — quiz master evaluates + progress analyst reports
 """
 
-from crewai import Agent, Crew, Process, Task, LLM
+from crewai import Agent, Crew, Process, Task
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from crewai import LLM  # noqa: F401 for type checking only
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 
@@ -24,12 +28,15 @@ class LearningCrew:
     def __init__(self, credentials: dict):
         self.credentials = credentials
 
-    def _get_llm(self) -> LLM:
+    def _get_llm(self) -> "LLM":
         if not self.credentials:
             raise ValueError("Credentials not provided to LearningCrew")
         
         provider = self.credentials.get("PROVIDER", "")
         model = self.credentials.get("MODEL", "")
+        
+        # Lazy import of LLM to avoid loading SDKs until needed
+        from crewai import LLM
         
         if provider == "AWS Bedrock":
             return LLM(
@@ -86,12 +93,15 @@ class AssessmentCrew:
     def __init__(self, credentials: dict):
         self.credentials = credentials
 
-    def _get_llm(self) -> LLM:
+    def _get_llm(self) -> "LLM":
         if not self.credentials:
             raise ValueError("Credentials not provided to AssessmentCrew")
         
         provider = self.credentials.get("PROVIDER", "")
         model = self.credentials.get("MODEL", "")
+        
+        # Lazy import of LLM to avoid loading SDKs until needed
+        from crewai import LLM
         
         if provider == "AWS Bedrock":
             return LLM(

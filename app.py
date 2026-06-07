@@ -165,6 +165,24 @@ html, body, [class*="st-"] { font-family: 'Inter', sans-serif; }
 }
 
 /* ── Sidebar tweaks ── */
+
+/* Make sidebar scrollable so all buttons are reachable on short screens */
+section[data-testid="stSidebar"] > div:first-child {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    max-height: 100vh !important;
+    padding-bottom: 1rem !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148,163,184,0.4) transparent;
+}
+section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar {
+    width: 4px;
+}
+section[data-testid="stSidebar"] > div:first-child::-webkit-scrollbar-thumb {
+    background: rgba(148,163,184,0.4);
+    border-radius: 4px;
+}
+
 section[data-testid="stSidebar"] .stRadio > div {
     gap: 6px;
 }
@@ -221,12 +239,31 @@ section[data-testid="stSidebar"] .stMarkdown strong {
 # ---------------------------------------------------------------------------
 
 def check_credentials() -> bool:
+    """Validate that necessary credential fields are present.
+    Supports XYSQ_API_KEY plus provider-specific keys.
+    """
     creds = st.session_state.get("credentials")
     if not creds:
         return False
-    has_xysq = bool(creds.get("XYSQ_API_KEY", "").strip())
-    return has_xysq
+    # XYSQ_API_KEY is mandatory for all providers
+    if not creds.get("XYSQ_API_KEY", "").strip():
+        return False
+    provider = creds.get("PROVIDER", "")
+    if provider == "AWS Bedrock":
+        required = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION", "MODEL"]
+    elif provider in ("Google Gemini", "OpenAI"):
+        required = ["API_KEY", "MODEL"]
+    else:
+        # Unknown provider, treat as invalid
+        return False
+    # Ensure all required keys are non-empty strings
+    for key in required:
+        if not creds.get(key, "").strip():
+            return False
+    return True
 
+# Keys that get reset between sessions (Start Session button).
+# credentials and show_settings are NOT here — they persist across sessions.
 _DEFAULTS: dict = dict(
     phase="select",
     topic="",
@@ -241,15 +278,14 @@ _DEFAULTS: dict = dict(
     evaluation="",
     report="",
     uploads=[],
-    credentials=None,
-    show_settings=True,
 )
 for _k, _v in _DEFAULTS.items():
     st.session_state.setdefault(_k, _v)
 
-# Check settings visibility properly after init
-if "show_settings" not in st.session_state or st.session_state.show_settings:
-    st.session_state.show_settings = not check_credentials()
+# credentials and show_settings are managed separately — never blindly reset.
+st.session_state.setdefault("credentials", None)
+# On first ever load, open settings only if credentials are missing.
+st.session_state.setdefault("show_settings", not check_credentials())
 
 
 # ---------------------------------------------------------------------------
@@ -559,7 +595,9 @@ with st.sidebar:
 
     st.markdown("")
     if st.button("🚀 Start Session", use_container_width=True, type="primary"):
-        st.session_state.update(_DEFAULTS)
+        # Reset only quiz/lesson state — credentials & show_settings are untouched
+        for _k, _v in _DEFAULTS.items():
+            st.session_state[_k] = _v
         st.session_state.topic = topic
         st.session_state.difficulty = difficulty
         st.session_state.num_questions = num_questions
@@ -600,9 +638,17 @@ with st.sidebar:
     st.caption(f"Sessions completed: **{session_count()}**")
 
     st.markdown("")
-    if st.button("⚙️ Settings", use_container_width=True):
-        st.session_state.show_settings = True
-        st.rerun()
+    col_settings, col_clear = st.columns(2)
+    with col_settings:
+        if st.button("⚙️ Settings", use_container_width=True):
+            st.session_state.show_settings = True
+            st.rerun()
+    with col_clear:
+        if st.button("🗑️ Logout", use_container_width=True):
+            st.session_state.credentials = None
+            st.session_state.show_settings = True
+            st.session_state.phase = "select"
+            st.rerun()
 
 
 # ---------------------------------------------------------------------------
@@ -634,6 +680,12 @@ if st.session_state.phase == "select":
 
 # ── Phase: Learning ────────────────────────────────────────────────────────
 elif st.session_state.phase == "learning":
+    # Guard: credentials must be valid before we do anything
+    if not check_credentials():
+        st.warning("⚠️ Please configure your API credentials before starting a session.")
+        st.session_state.show_settings = True
+        st.rerun()
+
     topic = st.session_state.topic
     difficulty = st.session_state.difficulty
     num_questions = st.session_state.num_questions
@@ -657,9 +709,6 @@ elif st.session_state.phase == "learning":
         )
 
     with st.spinner(f"📚 Building {difficulty.lower()} lesson on **{topic}** ({num_questions} questions)…"):
-        if not check_credentials():
-            st.warning("⚠️ Please configure your API credentials before starting a session.")
-            st.stop()
         learning = LearningCrew(credentials=st.session_state.credentials)
         crew_instance = learning.crew()
         result = crew_instance.kickoff(inputs={

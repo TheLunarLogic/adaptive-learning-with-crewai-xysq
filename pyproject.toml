@@ -5,7 +5,7 @@ description = "Adaptive Learning Companion with Persistent Memory — xysq + Cre
 authors = [{ name = "xysq.ai", email = "hello@xysq.ai" }]
 requires-python = ">=3.11,<3.12"
 dependencies = [
-    "crewai[bedrock,tools]==1.14.4",
+    "crewai[bedrock,google-genai,openai,tools]==1.14.4",
     "xysq @ git+https://github.com/xysq-ai/sdk_python_xysq.git",
     "streamlit>=1.40.0",
     "python-dotenv>=1.0.0",

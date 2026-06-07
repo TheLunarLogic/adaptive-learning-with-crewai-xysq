@@ -52,7 +52,8 @@ def store(
             scope="permanent",
         )
         return "✓ Memory stored"
-    except Exception:
+    except Exception as exc:
+        logging.getLogger(__name__).warning("memory.capture() failed: %s", exc)
         return "⚠ Memory temporarily unavailable — continuing without storing."
 
 
@@ -73,17 +74,18 @@ def _is_study_related(text: str) -> bool:
 
 
 def recall(credentials: dict, query: str, *, budget: str = "low") -> list[str]:
-    """Surface relevant *learning* memories only. Filters out non-study chat."""
+    """Surface relevant memories for the given query."""
     try:
         memories = _client(credentials["XYSQ_API_KEY"]).memory.surface(
             query,
             budget=budget,
-            intent="learning",       # tell xysq we want educational content
-            domain="education",      # scope to the education domain
         )
-        # Post-filter: drop anything that slipped through and isn't study-related
-        return [m.text for m in memories if _is_study_related(m.text)]
-    except Exception:
+        # Return all memories the API considers relevant — the query itself
+        # is already scoped to study-session vocabulary, so no need for a
+        # second heuristic filter that drops valid results.
+        return [m.text for m in memories if getattr(m, "text", "")]
+    except Exception as exc:
+        logging.getLogger(__name__).warning("memory.surface() failed: %s", exc)
         return []
 
 
@@ -99,20 +101,24 @@ def synthesize(credentials: dict, query: str) -> str:
         return ""
 
 
-def get_learning_context(credentials: dict, topic: str) -> str:
+def get_learning_context(credentials: dict | None, topic: str) -> str:
     """Build learning context for *topic* using surface() only.
 
     No synthesize() call here — avoids the heavy /reflect endpoint
     that causes timeouts on startup.
-
-    The query is tightly scoped to study-session language so xysq
-    prioritises learning memories over casual chat.
     """
-    # Very specific query — anchored to study-session vocabulary
+    if not credentials:
+        return "No prior learning history found."
+
+    # Try a focused study-session query first
     memories = recall(
         credentials,
-        f"{topic} study session quiz score learning progress understanding gaps results"
+        f"{topic} study session quiz score learning progress understanding gaps results",
     )
+
+    # Fallback: simpler topic-only query in case the verbose one misses
+    if not memories:
+        memories = recall(credentials, topic)
 
     if not memories:
         return "No prior learning history found."
