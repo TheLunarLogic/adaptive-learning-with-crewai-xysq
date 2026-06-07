@@ -11,6 +11,8 @@ Come back tomorrow — the system still knows where you left off.
 [![CrewAI](https://img.shields.io/badge/CrewAI-1.14-orange.svg)](https://crewai.com)
 [![xysq](https://img.shields.io/badge/xysq-memory-00b89a.svg)](https://xysq.ai)
 [![Bedrock](https://img.shields.io/badge/Amazon-Bedrock-yellow.svg)](https://aws.amazon.com/bedrock/)
+[![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4.svg)](https://ai.google.dev/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-412991.svg)](https://openai.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
@@ -182,8 +184,8 @@ The learner profile persists.
     ┌──────────────┼────────────┐
     │              │            │
 ┌───┴───┐   ┌──────┴─────┐  ┌───┴─────┐
-│ xysq  │   │  xysq      │  │ Amazon  │
-│Memory │   │ Organise   │  │ Bedrock │
+│ xysq  │   │  xysq      │  │ AI      │
+│Memory │   │ Organise   │  │Provider │
 │       │   │            │  │         │
 │capture│   │  upload    │  │         │
 │surface│   │  extract   │  │         │
@@ -223,17 +225,6 @@ cd xysq_crewai
 crewai install
 ```
 
-```bash
-cp .env.example .env
-```
-
-| Variable | Source |
-|---|---|
-| `XYSQ_API_KEY` | [app.xysq.ai/connect](https://app.xysq.ai/connect) |
-| `AWS_ACCESS_KEY_ID` | AWS IAM console |
-| `AWS_SECRET_ACCESS_KEY` | AWS IAM console |
-| `AWS_DEFAULT_REGION` | e.g. `us-east-1` |
-
 ### Run
 
 ```bash
@@ -241,6 +232,11 @@ uv run streamlit run app.py
 ```
 
 Opens at `http://localhost:8501`.
+
+On your **first launch**, the app will present a **Configuration Setup** screen where you can:
+1. Provide your `XYSQ_API_KEY` ([get it here](https://app.xysq.ai/connect)).
+2. Select your AI Provider (**AWS Bedrock**, **Google Gemini**, or **OpenAI**) and enter the required API keys.
+3. Automatically save them to your environment so you never have to enter them again.
 
 <br>
 
@@ -254,7 +250,7 @@ Opens at `http://localhost:8501`.
 |---|---|
 | **Memory** | [xysq](https://xysq.ai) — persistent agent memory |
 | **Agents** | [CrewAI](https://crewai.com) — role-based multi-agent orchestration |
-| **LLM** | [Amazon Bedrock](https://aws.amazon.com/bedrock/) — Nova Lite |
+| **LLM** | Amazon Bedrock, Google Gemini, or OpenAI |
 | **UI** | [Streamlit](https://streamlit.io/) — interactive web interface |
 | **Tooling** | [uv](https://docs.astral.sh/uv/) — fast Python package management |
 
@@ -276,7 +272,7 @@ MIT
 
 <br>
 
-Built with [xysq](https://xysq.ai) · [CrewAI](https://crewai.com) · [Amazon Bedrock](https://aws.amazon.com/bedrock/)
+Built with [xysq](https://xysq.ai) · [CrewAI](https://crewai.com) · [Streamlit](https://streamlit.io/)
 
 <br>
 

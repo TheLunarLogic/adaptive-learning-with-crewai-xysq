@@ -220,6 +220,13 @@ section[data-testid="stSidebar"] .stMarkdown strong {
 # Session state
 # ---------------------------------------------------------------------------
 
+def check_credentials() -> bool:
+    has_xysq = bool(os.environ.get("XYSQ_API_KEY", "").strip())
+    has_aws = all(bool(os.environ.get(k, "").strip()) for k in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_DEFAULT_REGION"])
+    has_gemini = bool(os.environ.get("GEMINI_API_KEY", "").strip()) or bool(os.environ.get("GOOGLE_API_KEY", "").strip())
+    has_openai = bool(os.environ.get("OPENAI_API_KEY", "").strip())
+    return has_xysq and (has_aws or has_gemini or has_openai)
+
 _DEFAULTS: dict = dict(
     phase="select",
     topic="",
@@ -234,6 +241,7 @@ _DEFAULTS: dict = dict(
     evaluation="",
     report="",
     uploads=[],
+    show_settings=not check_credentials(),
 )
 for _k, _v in _DEFAULTS.items():
     st.session_state.setdefault(_k, _v)
@@ -324,6 +332,225 @@ def _score_answers(questions: list[dict], answers: dict) -> tuple[int, int]:
 
 
 # ---------------------------------------------------------------------------
+# Setup Helpers
+# ---------------------------------------------------------------------------
+
+def parse_env_content(content: str) -> dict:
+    env_dict = {}
+    for line in content.splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            env_dict[k.strip()] = v.strip()
+    return env_dict
+
+def update_env_file(updates: dict) -> None:
+    env_path = Path(__file__).parent / ".env"
+    lines = []
+    if env_path.exists():
+        try:
+            with open(env_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+        except Exception:
+            pass
+
+    new_lines = []
+    updated_keys = set()
+    for line in lines:
+        stripped = line.strip()
+        if stripped and not stripped.startswith("#") and "=" in stripped:
+            k, _ = stripped.split("=", 1)
+            k = k.strip()
+            if k in updates:
+                new_lines.append(f"{k}={updates[k]}\n")
+                updated_keys.add(k)
+            else:
+                new_lines.append(line)
+        else:
+            new_lines.append(line)
+    
+    for k, v in updates.items():
+        if k not in updated_keys:
+            new_lines.append(f"{k}={v}\n")
+
+    try:
+        with open(env_path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+    except Exception as e:
+        st.error(f"Failed to save credentials: {e}")
+        return
+
+    for k, v in updates.items():
+        os.environ[k] = v
+
+def render_setup_page():
+    st.markdown(
+        '<div class="app-header">'
+        "<h1>⚙️ Configuration Setup</h1>"
+        "<p>Please configure your credentials to use the Adaptive Learning Companion.</p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
+    if check_credentials():
+        if st.button("← Back to Application"):
+            st.session_state.show_settings = False
+            st.rerun()
+    
+    tab1, tab2 = st.tabs(["✍️ Manual Entry", "📄 Upload .env File"])
+    
+    with tab1:
+        provider = st.radio("Select AI Provider", ["AWS Bedrock", "Google Gemini", "OpenAI"], key="man_prov", horizontal=True)
+        with st.form("manual_setup_form"):
+            xysq_key = st.text_input("XYSQ_API_KEY", value="", type="password")
+            
+            aws_access, aws_secret, aws_region = "", "", ""
+            gemini_key, openai_key = "", ""
+            model = ""
+
+            if provider == "AWS Bedrock":
+                aws_access = st.text_input("AWS_ACCESS_KEY_ID", value="")
+                aws_secret = st.text_input("AWS_SECRET_ACCESS_KEY", value="", type="password")
+                aws_region = st.text_input("AWS_DEFAULT_REGION", value="")
+                model = st.text_input("MODEL", value="bedrock/us.amazon.nova-lite-v1:0")
+            elif provider == "Google Gemini":
+                gemini_key = st.text_input("GEMINI_API_KEY", value="", type="password")
+                model = st.text_input("MODEL", value="gemini/gemini-1.5-pro")
+            elif provider == "OpenAI":
+                openai_key = st.text_input("OPENAI_API_KEY", value="", type="password")
+                model = st.text_input("MODEL", value="gpt-4o")
+            
+            submitted = st.form_submit_button("Save Credentials", type="primary")
+            if submitted:
+                is_valid = True
+                updates = {"XYSQ_API_KEY": xysq_key, "MODEL": model}
+                
+                if provider == "AWS Bedrock":
+                    if not all([xysq_key, aws_access, aws_secret, aws_region, model]):
+                        st.error("Please fill in all AWS fields and XYSQ key.")
+                        is_valid = False
+                    else:
+                        updates.update({
+                            "AWS_ACCESS_KEY_ID": aws_access,
+                            "AWS_SECRET_ACCESS_KEY": aws_secret,
+                            "AWS_DEFAULT_REGION": aws_region
+                        })
+                elif provider == "Google Gemini":
+                    if not all([xysq_key, gemini_key, model]):
+                        st.error("Please fill in GEMINI_API_KEY, XYSQ key, and MODEL.")
+                        is_valid = False
+                    else:
+                        updates.update({"GEMINI_API_KEY": gemini_key, "GOOGLE_API_KEY": gemini_key})
+                elif provider == "OpenAI":
+                    if not all([xysq_key, openai_key, model]):
+                        st.error("Please fill in OPENAI_API_KEY, XYSQ key, and MODEL.")
+                        is_valid = False
+                    else:
+                        updates.update({"OPENAI_API_KEY": openai_key})
+                
+                if is_valid:
+                    update_env_file(updates)
+                    st.session_state.show_settings = False
+                    st.rerun()
+
+    with tab2:
+        uploaded_env = st.file_uploader("Upload your .env file", type=["env", "txt"], key="env_uploader")
+        if uploaded_env:
+            try:
+                content = uploaded_env.getvalue().decode("utf-8")
+                parsed = parse_env_content(content)
+                if parsed:
+                    st.success("File parsed successfully. Review and save below.")
+                    
+                    default_prov_idx = 0
+                    if "GEMINI_API_KEY" in parsed or "GOOGLE_API_KEY" in parsed:
+                        default_prov_idx = 1
+                    elif "OPENAI_API_KEY" in parsed:
+                        default_prov_idx = 2
+                        
+                    up_provider = st.radio("Detected/Select Provider", ["AWS Bedrock", "Google Gemini", "OpenAI"], index=default_prov_idx, key="up_prov", horizontal=True)
+                    
+                    with st.form("upload_setup_form"):
+                        up_xysq = st.text_input("XYSQ_API_KEY", value=parsed.get("XYSQ_API_KEY", ""), type="password")
+                        
+                        up_aws_access, up_aws_secret, up_aws_region = "", "", ""
+                        up_gemini_key, up_openai_key = "", ""
+                        up_model = ""
+
+                        if up_provider == "AWS Bedrock":
+                            up_aws_access = st.text_input("AWS_ACCESS_KEY_ID", value=parsed.get("AWS_ACCESS_KEY_ID", ""))
+                            up_aws_secret = st.text_input("AWS_SECRET_ACCESS_KEY", value=parsed.get("AWS_SECRET_ACCESS_KEY", ""), type="password")
+                            up_aws_region = st.text_input("AWS_DEFAULT_REGION", value=parsed.get("AWS_DEFAULT_REGION", ""))
+                            up_model = st.text_input("MODEL", value=parsed.get("MODEL", "bedrock/us.amazon.nova-lite-v1:0"))
+                        elif up_provider == "Google Gemini":
+                            up_gemini_key = st.text_input("GEMINI_API_KEY / GOOGLE_API_KEY", value=parsed.get("GEMINI_API_KEY", parsed.get("GOOGLE_API_KEY", "")), type="password")
+                            up_model = st.text_input("MODEL", value=parsed.get("MODEL", "gemini/gemini-1.5-pro"))
+                        elif up_provider == "OpenAI":
+                            up_openai_key = st.text_input("OPENAI_API_KEY", value=parsed.get("OPENAI_API_KEY", ""), type="password")
+                            up_model = st.text_input("MODEL", value=parsed.get("MODEL", "gpt-4o"))
+                            
+                        up_submitted = st.form_submit_button("Save Uploaded Credentials", type="primary")
+                        if up_submitted:
+                            is_valid = True
+                            updates = {"XYSQ_API_KEY": up_xysq, "MODEL": up_model}
+                            
+                            if up_provider == "AWS Bedrock":
+                                if not all([up_xysq, up_aws_access, up_aws_secret, up_aws_region, up_model]):
+                                    st.error("Please fill in all required fields.")
+                                    is_valid = False
+                                else:
+                                    updates.update({
+                                        "AWS_ACCESS_KEY_ID": up_aws_access,
+                                        "AWS_SECRET_ACCESS_KEY": up_aws_secret,
+                                        "AWS_DEFAULT_REGION": up_aws_region
+                                    })
+                            elif up_provider == "Google Gemini":
+                                if not all([up_xysq, up_gemini_key, up_model]):
+                                    st.error("Please fill in all required fields.")
+                                    is_valid = False
+                                else:
+                                    updates.update({"GEMINI_API_KEY": up_gemini_key, "GOOGLE_API_KEY": up_gemini_key})
+                            elif up_provider == "OpenAI":
+                                if not all([up_xysq, up_openai_key, up_model]):
+                                    st.error("Please fill in all required fields.")
+                                    is_valid = False
+                                else:
+                                    updates.update({"OPENAI_API_KEY": up_openai_key})
+                                    
+                            if is_valid:
+                                update_env_file(updates)
+                                st.session_state.show_settings = False
+                                st.rerun()
+                else:
+                    st.warning("No valid variables found in the uploaded file.")
+            except Exception as e:
+                st.error(f"Error reading file. Please ensure it's a valid text file. ({e})")
+
+
+# ---------------------------------------------------------------------------
+# Settings Intercept
+# ---------------------------------------------------------------------------
+if st.session_state.get("show_settings", False):
+    with st.sidebar:
+        st.markdown("### 🧠 Learning Companion")
+        st.caption("Adaptive memory across sessions")
+        st.divider()
+        st.markdown("#### 🔑 Get your API keys")
+        st.markdown(
+            "**xysq (Required)**\n\n"
+            "[app.xysq.ai/connect](https://app.xysq.ai/connect)\n\n"
+            "**AWS Bedrock**\n\n"
+            "[AWS IAM Console](https://console.aws.amazon.com/iam)\n\n"
+            "**Google Gemini**\n\n"
+            "[Google AI Studio](https://aistudio.google.com/app/apikey)\n\n"
+            "**OpenAI**\n\n"
+            "[OpenAI Platform](https://platform.openai.com/api-keys)"
+        )
+    render_setup_page()
+    st.stop()
+
+
+# ---------------------------------------------------------------------------
 # Sidebar
 # ---------------------------------------------------------------------------
 
@@ -394,6 +621,11 @@ with st.sidebar:
 
     st.divider()
     st.caption(f"Sessions completed: **{session_count()}**")
+
+    st.markdown("")
+    if st.button("⚙️ Settings", use_container_width=True):
+        st.session_state.show_settings = True
+        st.rerun()
 
 
 # ---------------------------------------------------------------------------
