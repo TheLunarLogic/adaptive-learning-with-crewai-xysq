@@ -232,6 +232,8 @@ uv run streamlit run app.py
 ```
 
 Opens at `http://localhost:8501`.
+Try the live demo online: https://adaptive-learning-with-crewai-xysq.streamlit.app/
+
 
 On your **first launch**, the app will present a **Configuration Setup** screen where you can:
 1. Provide your `XYSQ_API_KEY` ([get it here](https://app.xysq.ai/connect)).
