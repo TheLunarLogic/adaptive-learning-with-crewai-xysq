@@ -3,7 +3,7 @@ name = "xysq_crewai"
 version = "0.1.0"
 description = "Adaptive Learning Companion with Persistent Memory — xysq + CrewAI"
 authors = [{ name = "xysq.ai", email = "hello@xysq.ai" }]
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "crewai[bedrock,tools]==1.14.4",
     "xysq @ git+https://github.com/xysq-ai/sdk_python_xysq.git",
