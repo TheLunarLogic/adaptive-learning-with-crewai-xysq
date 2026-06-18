@@ -217,42 +217,89 @@ Memory and document storage are handled by [xysq](https://xysq.ai) — fully man
 ### Prerequisites
 
 - Python 3.11+
+- Node.js 18+ and npm
 - [uv](https://docs.astral.sh/uv/) package manager
 - [xysq API key](https://app.xysq.ai/connect)
-- AWS credentials with Bedrock access
+- An LLM provider: Google Gemini, OpenAI, or AWS Bedrock
 
-### Setup
+### Local Development
 
+**1. Clone and install backend:**
 ```bash
 git clone https://github.com/<your-org>/xysq_crewai.git
 cd xysq_crewai
-crewai install
+cp .env.example .env   # fill in your keys
+uv sync
 ```
 
-### Run
-
-**1. Start the Backend API (FastAPI)**
-Open a terminal in the root directory:
+**2. Start the backend API:**
 ```bash
 uv run uvicorn api_server:app --reload --port 8000
 ```
 
-**2. Start the Frontend (React / Vite)**
-Open a second terminal, navigate to the `frontend` folder:
+**3. Start the frontend (new terminal):**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-The app opens at `http://localhost:5173`.
-Try the live demo online: https://adaptive-learning-with-crewai-xysq.vercel.app/
-
+The app opens at `http://localhost:5173`. The Vite dev proxy forwards all `/api` calls to `localhost:8000` automatically.
 
 On your **first launch**, the app will present a **Configuration Setup** screen where you can:
 1. Provide your `XYSQ_API_KEY` ([get it here](https://app.xysq.ai/connect)).
 2. Select your AI Provider (**AWS Bedrock**, **Google Gemini**, or **OpenAI**) and enter the required API keys.
-3. Automatically save them to your environment so you never have to enter them again.
+
+<br>
+
+---
+
+<br>
+
+## Deployment
+
+### Backend → Railway
+
+1. Push your code to GitHub.
+2. Create a new [Railway](https://railway.app) project and connect your GitHub repo.
+3. Railway will auto-detect `railway.toml` and use it as the build/start config.
+4. Set the following **Environment Variables** in the Railway dashboard:
+
+| Variable | Description |
+|---|---|
+| `XYSQ_API_KEY` | Your xysq API key |
+| `PROVIDER` | `Google Gemini`, `OpenAI`, or `AWS Bedrock` |
+| `MODEL` | e.g. `gemini/gemini-2.0-flash` or `gpt-4o` |
+| `API_KEY` | Your Gemini or OpenAI API key |
+| `AWS_ACCESS_KEY_ID` | *(Bedrock only)* |
+| `AWS_SECRET_ACCESS_KEY` | *(Bedrock only)* |
+| `AWS_DEFAULT_REGION` | *(Bedrock only)* |
+| `ALLOWED_ORIGINS` | Your Vercel frontend URL (add after Vercel deploy) |
+
+5. Deploy — Railway will expose your API at `https://<your-app>.up.railway.app`.
+
+### Frontend → Vercel
+
+1. Go to [Vercel](https://vercel.com) and create a new project.
+2. Import the same GitHub repo and set the **Root Directory** to `frontend`.
+3. Vercel auto-detects Vite — no extra build settings needed (`vercel.json` is already included).
+4. Set this **Environment Variable** in the Vercel dashboard:
+
+| Variable | Value |
+|---|---|
+| `VITE_API_URL` | `https://<your-railway-app>.up.railway.app/api` |
+
+5. Deploy — Vercel will expose your frontend at `https://<your-app>.vercel.app`.
+
+### Wire CORS (final step)
+
+After both are deployed, go back to Railway and add your Vercel URL to `ALLOWED_ORIGINS`:
+
+```
+ALLOWED_ORIGINS=https://your-app.vercel.app
+```
+
+Railway will redeploy automatically. Your frontend and backend are now fully connected.
 
 <br>
 

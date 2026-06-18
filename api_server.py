@@ -43,9 +43,15 @@ MIME_MAP = {"pdf": "application/pdf", "txt": "text/plain", "md": "text/markdown"
 
 app = FastAPI(title="Adaptive Learning Companion API", version="1.0.0")
 
+# Build CORS origins: always allow local dev, plus any production origins
+# configured via the ALLOWED_ORIGINS env var (comma-separated URLs).
+_dev_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+_extra = [o.strip() for o in os.getenv("ALLOWED_ORIGINS", "").split(",") if o.strip()]
+_origins = list(dict.fromkeys(_dev_origins + _extra))  # deduplicate, preserve order
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,4 +1,6 @@
-const API_BASE = '/api';
+// In production (Vercel), set VITE_API_URL=https://your-app.up.railway.app/api
+// In local dev, leave it unset — Vite proxy will forward /api to localhost:8000
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 function getCredentials() {
   const creds = localStorage.getItem('credentials');
