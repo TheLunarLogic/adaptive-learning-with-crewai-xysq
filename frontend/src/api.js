@@ -3,8 +3,11 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 function getCredentials() {
-  const creds = localStorage.getItem('credentials');
-  return creds ? JSON.parse(creds) : null;
+  const creds = sessionStorage.getItem('credentials');
+  if (!creds) {
+    throw new Error('No credentials found. Please configure your API keys in Settings.');
+  }
+  return JSON.parse(creds);
 }
 
 async function fetchApi(endpoint, options = {}) {
