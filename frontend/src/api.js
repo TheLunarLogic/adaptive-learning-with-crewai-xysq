@@ -1,0 +1,84 @@
+const API_BASE = '/api';
+
+function getCredentials() {
+  const creds = localStorage.getItem('credentials');
+  return creds ? JSON.parse(creds) : null;
+}
+
+async function fetchApi(endpoint, options = {}) {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`API Error: ${res.statusText}`);
+  }
+  return res.json();
+}
+
+export const api = {
+  getTopics: () => fetchApi('/topics'),
+  
+  validateCredentials: (credentials) => 
+    fetchApi('/credentials/validate', {
+      method: 'POST',
+      body: JSON.stringify({ credentials })
+    }),
+
+  getMemoryContext: (topic) => 
+    fetchApi('/memory/context', {
+      method: 'POST',
+      body: JSON.stringify({ credentials: getCredentials(), topic })
+    }),
+
+  getDocumentContext: (topic) => 
+    fetchApi('/memory/document-context', {
+      method: 'POST',
+      body: JSON.stringify({ credentials: getCredentials(), topic })
+    }),
+
+  uploadDocument: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('credentials_json', JSON.stringify(getCredentials()));
+
+    const res = await fetch(`${API_BASE}/documents/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Upload failed');
+    return res.json();
+  },
+
+  learnSession: (topic, difficulty, numQuestions, memoryContext, documentContext) =>
+    fetchApi('/session/learn', {
+      method: 'POST',
+      body: JSON.stringify({
+        credentials: getCredentials(),
+        topic,
+        difficulty,
+        num_questions: numQuestions,
+        memory_context: memoryContext,
+        document_context: documentContext
+      })
+    }),
+
+  evaluateSession: (topic, difficulty, numQuestions, memoryContext, questions, answers) =>
+    fetchApi('/session/evaluate', {
+      method: 'POST',
+      body: JSON.stringify({
+        credentials: getCredentials(),
+        topic,
+        difficulty,
+        num_questions: numQuestions,
+        memory_context: memoryContext,
+        questions,
+        answers
+      })
+    }),
+
+  getReportCount: () => fetchApi('/reports/count'),
+};

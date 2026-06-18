@@ -1,0 +1,95 @@
+teach_task:
+  description: >
+    Teach the learner about: {topic}
+
+    DIFFICULTY LEVEL: {difficulty}
+
+    ============================================================
+    UPLOADED DOCUMENT CONTENT (PRIMARY SOURCE — HIGHEST PRIORITY):
+    ============================================================
+    {document_context}
+
+    If the above section is non-empty, you MUST base your entire lesson
+    on this document. Treat it as the authoritative source of truth.
+    Do NOT rely on your general training knowledge when document content
+    is available — the learner uploaded this material specifically so
+    the lesson is grounded in it.
+
+    PRIOR LEARNING CONTEXT (from persistent memory — secondary):
+    {memory_context}
+
+    INSTRUCTIONS:
+    - If document content is provided above, teach ONLY from that material.
+    - If the learner has prior understanding gaps listed in memory context,
+      focus on those sections within the document.
+    - If no document is provided, teach foundational concepts from training
+      knowledge, adapting to prior memory context if available.
+    - Adjust depth and complexity based on the difficulty level.
+    - Keep the lesson to 3–4 focused paragraphs.
+    - Use concrete examples and analogies drawn from the document when present.
+    - Do NOT include any quiz questions in your lesson output.
+  expected_output: >
+    A clear, adaptive lesson on {topic} at {difficulty} level, grounded in
+    the uploaded document when provided. Plain prose only —
+    no questions, no JSON, no formatting symbols.
+  agent: tutor
+
+quiz_task:
+  description: >
+    Generate a multiple-choice quiz on: {topic}
+
+    DIFFICULTY LEVEL: {difficulty}
+    NUMBER OF QUESTIONS: {num_questions}
+
+    ============================================================
+    UPLOADED DOCUMENT CONTENT (PRIMARY SOURCE — HIGHEST PRIORITY):
+    ============================================================
+    {document_context}
+
+    If the above section is non-empty, ALL quiz questions MUST be derived
+    from this document. Do not introduce concepts not present in the
+    document. The learner uploaded this file specifically to be tested
+    on its content.
+
+    PRIOR LEARNING CONTEXT (from persistent memory — secondary):
+    {memory_context}
+
+    CRITICAL: You MUST output ONLY a valid JSON array. Nothing else.
+    No preamble. No explanation. No markdown fences. No text before or after.
+    Start your response with [ and end with ].
+
+    Each question object must have EXACTLY these fields:
+    - "question": string — the question text
+    - "options": array of exactly 4 strings, each starting with "A) ", "B) ", "C) ", "D) "
+    - "correct_answer": string — exactly ONE letter: "A", "B", "C", or "D"
+    - "explanation": string — one sentence explaining the correct answer
+
+    RULES:
+    - Generate exactly {num_questions} question objects in the array.
+    - When document content is provided, base ALL questions on that document.
+    - When no document is provided, target understanding gaps from memory
+      context, or use training knowledge if no history exists.
+    - Adjust complexity to match the {difficulty} difficulty level.
+    - Every question must have exactly 4 options.
+    - correct_answer must be exactly one of: A, B, C, D
+
+    EXAMPLE of required output format (2 questions):
+    [
+      {
+        "question": "What is the base case in recursion?",
+        "options": ["A) The recursive call", "B) The condition that stops recursion", "C) The function name", "D) The return type"],
+        "correct_answer": "B",
+        "explanation": "The base case is the condition that terminates the recursion."
+      },
+      {
+        "question": "Which data structure uses LIFO order?",
+        "options": ["A) Queue", "B) Linked List", "C) Stack", "D) Heap"],
+        "correct_answer": "C",
+        "explanation": "A stack follows Last-In First-Out order."
+      }
+    ]
+  expected_output: >
+    A valid JSON array of exactly {num_questions} question objects based
+    primarily on the uploaded document when provided, or training knowledge
+    otherwise. Output ONLY the JSON array, starting with [ and ending with ].
+  agent: quiz_master

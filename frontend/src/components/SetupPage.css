@@ -1,0 +1,57 @@
+.setup-page {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.setup-header {
+  margin-bottom: var(--space-md);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-xs);
+}
+
+.tab {
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-md);
+  font-weight: 600;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.tab.active {
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-teal);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.setup-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+  margin-bottom: var(--space-md);
+}
+
+.file-upload-ui.large {
+  padding: var(--space-3xl) var(--space-2xl);
+  cursor: pointer;
+  font-size: var(--font-lg);
+}

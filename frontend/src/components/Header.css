@@ -1,0 +1,36 @@
+.app-header {
+  background: var(--bg-surface);
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-surface) 100%);
+  padding: var(--space-xl) var(--space-2xl);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-xl);
+  color: white;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent-gradient);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-header p {
+  margin: 0.5rem 0 0;
+  opacity: 0.85;
+  font-size: var(--font-base);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-secondary);
+}

@@ -1,0 +1,115 @@
+.results-phase {
+  width: 100%;
+}
+
+.text-center { text-align: center; justify-content: center; align-items: center; }
+.text-success { color: var(--success); font-weight: 600; }
+.text-warning { color: var(--warning); font-weight: 600; }
+.text-error { color: var(--error); font-weight: 600; }
+
+.results-header {
+  display: flex;
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.results-info h3 {
+  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+
+.review-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.review-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+.review-card.correct {
+  border-color: var(--success);
+  border-left-color: var(--success);
+}
+
+.review-card.incorrect {
+  border-color: var(--error);
+  border-left-color: var(--error);
+}
+
+.review-card .question-text {
+  font-size: var(--font-base);
+  margin-bottom: var(--space-sm);
+}
+
+.indicator {
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-sm);
+}
+
+.review-answers {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  font-size: var(--font-sm);
+}
+
+.review-answers .label {
+  color: var(--text-secondary);
+}
+
+.review-answers .value {
+  color: var(--text-primary);
+}
+
+.explanation {
+  background: var(--bg-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  margin-top: var(--space-md);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.results-footer {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--space-2xl);
+  margin-top: var(--space-md);
+}
+
+.update-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.update-card strong {
+  display: block;
+  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
+  font-size: var(--font-base);
+}
+
+.update-card b {
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .results-footer {
+    grid-template-columns: 1fr;
+  }
+}

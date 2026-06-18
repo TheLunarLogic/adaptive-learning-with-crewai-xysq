@@ -1,0 +1,141 @@
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--space-lg);
+  overflow-y: auto;
+  height: 100vh;
+  flex-shrink: 0;
+}
+
+.sidebar-header h3 {
+  font-size: var(--font-lg);
+  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+
+.sidebar .caption {
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+}
+
+.sidebar-section {
+  margin-bottom: var(--space-md);
+}
+
+.radio-group.horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.radio-label.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.radio-label input[type="radio"] {
+  accent-color: var(--accent-teal);
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+
+.mt-4 { margin-top: var(--space-xl); }
+.mb-4 { margin-bottom: var(--space-md); }
+.block { display: block; }
+
+/* File uploader */
+.file-upload-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: var(--space-xs);
+}
+
+.file-upload-wrapper.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.file-upload-wrapper.disabled input[type="file"] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.file-upload-wrapper input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.file-upload-ui {
+  background: var(--bg-secondary);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-sm);
+  transition: all var(--transition-fast);
+}
+
+.file-upload-wrapper:hover .file-upload-ui {
+  border-color: var(--accent-teal);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.uploads-list {
+  margin-top: var(--space-md);
+}
+.uploads-list ul {
+  list-style: none;
+  margin: var(--space-xs) 0 0 0;
+  padding: 0;
+}
+.uploads-list li {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-xs);
+  border: 1px solid var(--border);
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.sidebar-actions button {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}

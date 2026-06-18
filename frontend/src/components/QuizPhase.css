@@ -1,0 +1,116 @@
+.quiz-phase {
+  width: 100%;
+}
+
+.quiz-header {
+  margin-bottom: var(--space-xl);
+}
+
+.quiz-header h3 {
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.question-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.question-num {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.question-text {
+  font-size: var(--font-lg);
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.options-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.option-label {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--space-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: 0;
+}
+
+.option-label:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--text-tertiary);
+}
+
+.option-label.selected {
+  background: var(--accent-teal-glow);
+  border-color: var(--accent-teal);
+}
+
+.option-label input[type="radio"] {
+  margin-top: 0.35rem;
+  margin-right: var(--space-md);
+  flex-shrink: 0;
+  accent-color: var(--accent-teal);
+}
+
+.option-text {
+  color: var(--text-primary);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Expander */
+.expander {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.expander-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.expander-header:hover {
+  background: var(--bg-surface-hover);
+}
+
+.expander-content {
+  padding: var(--space-md) var(--space-lg);
+  border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
