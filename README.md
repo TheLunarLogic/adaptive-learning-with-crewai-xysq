@@ -17,6 +17,11 @@ Come back tomorrow — the system still knows where you left off.
 
 </div>
 
+## 🚀 Live Demo
+
+**Frontend:**
+🔗 https://adaptive-learning-with-crewai-xysq.vercel.app/
+
 <br>
 
 ## See it in action
