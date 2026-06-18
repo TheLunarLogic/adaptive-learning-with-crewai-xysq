@@ -55,8 +55,13 @@ export default function SetupPage({ onSave, onBack }) {
     content.split('\n').forEach(line => {
       const trimmed = line.trim();
       if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
-        const [k, v] = trimmed.split('=');
-        dict[k.trim()] = v.trim();
+        // Split on the FIRST `=` only — values can contain `=` (e.g. base64 keys)
+        const idx = trimmed.indexOf('=');
+        const k = trimmed.slice(0, idx).trim();
+        // Strip optional surrounding quotes from the value
+        const raw = trimmed.slice(idx + 1).trim();
+        const v = raw.replace(/^["']|["']$/g, '');
+        if (k) dict[k] = v;
       }
     });
     return dict;
@@ -116,7 +121,19 @@ export default function SetupPage({ onSave, onBack }) {
 
         {(tab === 'manual' || uploadedCreds) && (
           <form onSubmit={handleManualSave}>
-            {uploadedCreds && <div className="alert alert-success">File parsed successfully. Review and save below.</div>}
+            {uploadedCreds && (
+              <div className="alert alert-success" style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                <span>File parsed successfully. Review and save below.</span>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  style={{marginLeft:'1rem', padding:'0.25rem 0.75rem', fontSize:'0.85rem'}}
+                  onClick={() => { setUploadedCreds(null); setTab('upload'); setError(''); }}
+                >
+                  ✕ Clear / Re-upload
+                </button>
+              </div>
+            )}
             
             <div className="form-group mb-4">
               <label>Select AI Provider</label>

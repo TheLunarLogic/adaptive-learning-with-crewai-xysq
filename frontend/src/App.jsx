@@ -35,7 +35,15 @@ function App() {
 
   // Initialize
   useEffect(() => {
-    const creds = localStorage.getItem('credentials');
+    // Use sessionStorage so credentials are cleared when the browser tab closes.
+    // This prevents the next user on a shared machine from being auto-logged in.
+
+    // One-time migration: purge any credentials left in localStorage by older versions.
+    if (localStorage.getItem('credentials')) {
+      localStorage.removeItem('credentials');
+    }
+
+    const creds = sessionStorage.getItem('credentials');
     if (creds) {
       const parsed = JSON.parse(creds);
       api.validateCredentials(parsed).then(res => {
@@ -43,10 +51,11 @@ function App() {
           setCredentials(parsed);
           setShowSettings(false);
         } else {
-          localStorage.removeItem('credentials');
+          sessionStorage.removeItem('credentials');
         }
       }).catch(err => {
         console.error(err);
+        sessionStorage.removeItem('credentials');
       });
     }
 
@@ -71,13 +80,13 @@ function App() {
   };
 
   const handleSettingsSave = (creds) => {
-    localStorage.setItem('credentials', JSON.stringify(creds));
+    sessionStorage.setItem('credentials', JSON.stringify(creds));
     setCredentials(creds);
     setShowSettings(false);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('credentials');
+    sessionStorage.removeItem('credentials');
     setCredentials(null);
     setShowSettings(true);
     setPhase('select');
